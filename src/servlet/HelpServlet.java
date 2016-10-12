@@ -12,58 +12,70 @@ import org.apache.struts2.ServletActionContext;
 
 import service.HelpService;
 import utils.msg;
+import utils.test;
 
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 
+import androidbeans.a_Help;
+import bean.Help;
+import bean.Customer;
 import bean.Help;
 
 public class HelpServlet extends ActionSupport {
 
 	private HelpService helpService;// 业务层对象
-	private final int RECORD_SIZE = 10;// 每页记录数
-	private final int PAGE_SIZE = 10;// 每组的页数
 
-	private Gson gson = new Gson();
-	private Map<String, String> map = new HashMap<String, String>();
-	private String json = "";
-	private String responsemsg = "";
-	private String mapjson = "";
+	public a_Help help2a(Help db_help) {
+		a_Help a_help = new a_Help();
+
+		a_help.setHelpContext(db_help.getHelpContext());
+		a_help.setHelpId(db_help.getHelpId());
+
+		return a_help;
+	}
 
 	public void doView() throws Exception {
 
+		Gson gson = new Gson();
+		Map<String, Object> map = new HashMap<String, Object>();
+		String status = "";
+		String message = "";
+		String data = "";
+		int page = 0;
+		String mapdata = "";
+
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
+		response.setContentType("application/data; charset=utf-8");
 		PrintWriter out = response.getWriter();
 
 		HttpServletRequest request = ServletActionContext.getRequest();
 		request.setCharacterEncoding("UTF-8");
 		int helpid = Integer.parseInt(request.getParameter("id"));
 
-		Help object = helpService.View(helpid);
+		Help db_help = helpService.View(helpid);
 
 		System.out.println("------->helpid:" + helpid);
-		System.out.println("------->object:" + object);
+		System.out.println("------->object:" + db_help);
 
-		if (object == null) {
-			responsemsg = msg.fail;
-			map.put("responsemsg", responsemsg);
-			mapjson = gson.toJson(map);
-
-			out.write(mapjson);
-			out.flush();
-			out.close();
-			return;
+		if (db_help == null) {
+			message = msg.help_helpnull;
+			status = msg.status_1;
+			map.put("status", status);
+			map.put("message", message);
+		} else {
+			message = msg.help_success;
+			status = msg.status_1;
+			map.put("status", status);
+			map.put("message", message);
+			data = gson.toJson(db_help);
+			map.put("data", data);
 		}
 
-		json = gson.toJson(object);
-		responsemsg = msg.success;
-		map.put("json", json);
-		map.put("responsemsg", responsemsg);
-		mapjson = gson.toJson(map);
+		mapdata = gson.toJson(map);
 
-		out.write(mapjson);
+		out.write(mapdata);
 		out.flush();
 		out.close();
 		return;
@@ -71,32 +83,43 @@ public class HelpServlet extends ActionSupport {
 
 	public void doFind() throws Exception {
 
+		Gson gson = new Gson();
+		Map<String, Object> map = new HashMap<String, Object>();
+		String status = "";
+		String message = "";
+		String data = "";
+		int page = 0;
+		String mapdata = "";
+
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
+		response.setContentType("application/data; charset=utf-8");
 		PrintWriter out = response.getWriter();
 
 		HttpServletRequest request = ServletActionContext.getRequest();
 		request.setCharacterEncoding("UTF-8");
 		int currentPage = Integer.parseInt(request.getParameter("page"));
-		String keyword = request.getParameter("kw");
+		String keyword = new String(request.getParameter("kw").getBytes("iso-8859-1"), "utf-8");
 
 		if (keyword == null || keyword == "")
 			keyword = "";
 
 		int firstPage = 1;
 		int lastPage = 1;
-		int totalRecord = helpService.GetCount(keyword);
-		int totalPage = totalRecord / this.RECORD_SIZE + 1;
-		if ((totalRecord % this.RECORD_SIZE == 0) && (totalRecord > this.RECORD_SIZE)) {
+		int totalRecord = helpService.Count_Keyword(keyword);
+		int totalPage = totalRecord / msg.RECORD_SIZE + 1;
+		if ((totalRecord % msg.RECORD_SIZE == 0) && (totalRecord > msg.RECORD_SIZE)) {
 			totalPage--;
 		}
-		if (totalPage < PAGE_SIZE) {
+		if (currentPage > totalPage) {
+			currentPage = 1;
+		}
+		if (totalPage < msg.PAGE_SIZE) {
 			firstPage = 1;
 			lastPage = totalPage;
 		} else {
-			firstPage = (currentPage / PAGE_SIZE) * PAGE_SIZE + 1;
-			lastPage = firstPage + PAGE_SIZE - 1;
+			firstPage = (currentPage / msg.PAGE_SIZE) * msg.PAGE_SIZE + 1;
+			lastPage = firstPage + msg.PAGE_SIZE - 1;
 			if (lastPage > totalPage) {
 				lastPage = totalPage;
 			}
@@ -109,8 +132,8 @@ public class HelpServlet extends ActionSupport {
 				System.out.print(i);
 			}
 		}
-		int fromIndex = (currentPage - 1) * this.RECORD_SIZE; // 选择从第几条开始
-		int toIndex = Math.min(fromIndex + this.RECORD_SIZE, totalRecord);// 调用Math.min函数取目的数
+		int fromIndex = (currentPage - 1) * msg.RECORD_SIZE; // 选择从第几条开始
+		int toIndex = Math.min(fromIndex + msg.RECORD_SIZE, totalRecord);// 调用Math.min函数取目的数
 
 		System.out.println("当前页码：totalPage" + totalPage);
 		System.out.println("当前页码：totalRecord" + totalRecord);
@@ -120,32 +143,39 @@ public class HelpServlet extends ActionSupport {
 		System.out.println("当前页码：firstPage" + firstPage);
 		System.out.println("当前页码：lastPage" + lastPage);
 
-		List<?> list = helpService.Find(keyword, fromIndex, toIndex - fromIndex);// 可优化
+		List<?> list = helpService.Find_Keyword(keyword, fromIndex, msg.RECORD_SIZE);// 可优化
 		if (list.size() == 0) {
-			responsemsg = msg.fail;
-			map.put("responsemsg", responsemsg);
-			mapjson = gson.toJson(map);
+			message = msg.help_helpnull;
+			status = msg.status_1;
+			map.put("status", status);
+			map.put("message", message);
+			mapdata = gson.toJson(map);
 
-			out.write(mapjson);
+			out.write(mapdata);
 			out.flush();
 			out.close();
 			return;
+		} else {
+			message = msg.help_success;
+			status = msg.status_1;
+			map.put("status", status);
+			map.put("message", message);
+			data = gson.toJson(list);
+			map.put("data", data);
+			map.put("page", totalPage);
 		}
 
-		json = gson.toJson(list);
-		responsemsg = msg.success;
-		map.put("json", json);
-		map.put("responsemsg", responsemsg);
-		map.put("totalPage", Integer.toString(totalPage));
-		map.put("totalRecord", Integer.toString(totalRecord));
-		map.put("currentPage", Integer.toString(currentPage));
-		map.put("fromIndex", Integer.toString(fromIndex));
-		map.put("toIndex", Integer.toString(toIndex));
-		map.put("firstPage", Integer.toString(firstPage));
-		map.put("lastPage", Integer.toString(lastPage));
-		mapjson = gson.toJson(map);
+		// map.put("totalPage", Integer.toString(totalPage));
+		// map.put("totalRecord", Integer.toString(totalRecord));
+		// map.put("currentPage", Integer.toString(currentPage));
+		// map.put("fromIndex", Integer.toString(fromIndex));
+		// map.put("toIndex", Integer.toString(toIndex));
+		// map.put("firstPage", Integer.toString(firstPage));
+		// map.put("lastPage", Integer.toString(lastPage));
 
-		out.write(mapjson);
+		mapdata = gson.toJson(map);
+
+		out.write(mapdata);
 		out.flush();
 		out.close();
 		return;

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="admin" location="10,17" size="315,283">
+    <action name="admin_*" location="88,82" size="150,188">
+      <result name="input">
+        <resourceEdge source="input" routing="0" target="login.jsp" />
+      </result>
+      <result name="login_view">
+        <resourceEdge source="login_view" routing="0" target="login.jsp" />
+      </result>
+      <result name="main_view">
+        <resourceEdge source="main_view" routing="0" target="main.jsp" />
+      </result>
+      <result name="admininfo_view">
+        <resourceEdge source="admininfo_view" routing="0" target="admininfo.jsp" />
+      </result>
+      <result name="adminlist_view">
+        <resourceEdge source="adminlist_view" routing="0" target="adminlist.jsp" />
+      </result>
+      <result name="adminedit_view">
+        <resourceEdge source="adminedit_view" routing="0" target="adminedit.jsp" />
+      </result>
+      <result name="adminadd_view">
+        <resourceEdge source="adminadd_view" routing="0" target="adminadd.jsp" />
+      </result>
+      <result name="systemerror_view">
+        <resourceEdge source="systemerror_view" routing="0" target="systemerror.jsp" />
+      </result>
+    </action>
+  </package>
+  <package name="help" location="16,433" size="193,220">
+    <action name="help_*" location="36,49" size="150,125">
+      <result name="helpinfo_view">
+        <resourceEdge source="helpinfo_view" routing="0" target="helpinfo.jsp" />
+      </result>
+      <result name="helplist_view">
+        <resourceEdge source="helplist_view" routing="0" target="helplist.jsp" />
+      </result>
+      <result name="helpedit_view">
+        <resourceEdge source="helpedit_view" routing="0" target="helpedit.jsp" />
+      </result>
+      <result name="helpadd_view">
+        <resourceEdge source="helpadd_view" routing="0" target="helpadd.jsp" />
+      </result>
+      <result name="systemerror_view">
+        <resourceEdge source="systemerror_view" routing="0" target="systemerror.jsp" />
+      </result>
+    </action>
+  </package>
+  <package name="push" location="41,826" size="204,187">
+    <action name="push_*" location="18,36" size="150,125">
+      <result name="pushinfo_view">
+        <resourceEdge source="pushinfo_view" routing="0" target="pushinfo.jsp" />
+      </result>
+      <result name="pushlist_view">
+        <resourceEdge source="pushlist_view" routing="0" target="pushlist.jsp" />
+      </result>
+      <result name="pushedit_view">
+        <resourceEdge source="pushedit_view" routing="0" target="pushedit.jsp" />
+      </result>
+      <result name="pushadd_view">
+        <resourceEdge source="pushadd_view" routing="0" target="pushadd.jsp" />
+      </result>
+      <result name="systemerror_view">
+        <resourceEdge source="systemerror_view" routing="0" target="systemerror.jsp" />
+      </result>
+    </action>
+  </package>
+  <webResource name="main.jsp" path="/main.jsp" location="354,15" size="150,55" />
+  <webResource name="systemerror.jsp" path="/systemerror.jsp" location="933,315" size="150,55" />
+  <webResource name="login.jsp" path="/login.jsp" location="526,79" size="150,55" />
+  <webResource name="admininfo.jsp" path="/admininfo.jsp" location="400,218" size="150,55" />
+  <webResource name="adminlist.jsp" path="/adminlist.jsp" location="656,130" size="150,55" />
+  <webResource name="adminadd.jsp" path="/adminadd.jsp" location="591,203" size="150,55" />
+  <webResource name="adminedit.jsp" path="/adminedit.jsp" location="762,192" size="150,55" />
+  <webResource name="helpinfo.jsp" path="/helpinfo.jsp" location="300,459" size="150,55" />
+  <webResource name="helplist.jsp" path="/helplist.jsp" location="662,461" size="150,55" />
+  <webResource name="helpedit.jsp" path="/helpedit.jsp" location="486,458" size="150,55" />
+  <webResource name="helpadd.jsp" path="/helpadd.jsp" location="443,577" size="150,55" />
+  <webResource name="pushinfo.jsp" path="/pushinfo.jsp" location="768,808" size="150,55" />
+  <webResource name="pushlist.jsp" path="/pushlist.jsp" location="429,803" size="150,55" />
+  <webResource name="pushedit.jsp" path="/pushedit.jsp" location="599,805" size="150,55" />
+  <webResource name="pushadd.jsp" path="/pushadd.jsp" location="252,808" size="150,55" />
+</Struts2Diagram>
+

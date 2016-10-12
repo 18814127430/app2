@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -30,12 +31,63 @@ public class CartDAO extends HibernateDaoSupport {
 	private static final Log log = LogFactory.getLog(CartDAO.class);
 	// property constants
 	public static final String GOODS_NUM = "goodsNum";
-	public static final String MONEY_DELIVER = "moneyDeliver";
-	public static final String MONEY_TOTAL = "moneyTotal";
-	public static final String CART_DATE = "cartDate";
 
 	protected void initDao() {
 		// do nothing
+	}
+
+	public int getCount(int customerid, int goodsid, String keyword) {
+		String hql = "select count(*) from Cart as model where 1=1 ";
+		if (customerid > 0) {
+			System.out.println("---->customerid:" + customerid);
+			hql = hql + " and model.customer.customerId = " + customerid;
+		}
+		if (goodsid > 0) {
+			System.out.println("---->goodsid:" + goodsid);
+			hql = hql + " and model.goods.goodsId = " + goodsid;
+		}
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.cartDate like'%" + keyword + "%' or model.goods.goodsKeyWord like '%" + keyword
+					+ "%' or model.customer.customerPhone like '%" + keyword + "%')";
+		}
+
+		System.out.println(hql);
+		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
+		System.out.println("----->intValue:" + count.intValue());
+		return count.intValue();
+	}
+
+	public List findAll(int customerid, int goodsid, String keyword, final int start, final int length) {
+		String hql = "from Cart as model where 1=1 ";
+
+		if (customerid > 0) {
+			System.out.println("---->customerid:" + customerid);
+			hql = hql + " and model.customer.customerId = " + customerid;
+		}
+		if (goodsid > 0) {
+			System.out.println("---->goodsid:" + goodsid);
+			hql = hql + " and model.goods.goodsId = " + goodsid;
+		}
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.cartDate like'%" + keyword + "%' or model.goods.goodsKeyWord like '%" + keyword
+					+ "%' or model.customer.customerPhone like '%" + keyword + "%')";
+		}
+
+		final String hql1 = hql;
+
+		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				Query query = session.createQuery(hql1);
+				System.out.println("------>hql:" + hql1);
+				query.setFirstResult(start);
+				query.setMaxResults(length);
+				List list = query.list();
+				return list;
+			}
+		});
+		return listTable;
 	}
 
 	public void save(Cart transientInstance) {
@@ -98,70 +150,15 @@ public class CartDAO extends HibernateDaoSupport {
 		return findByProperty(GOODS_NUM, goodsNum);
 	}
 
-	public List findByMoneyDeliver(Object moneyDeliver) {
-		return findByProperty(MONEY_DELIVER, moneyDeliver);
-	}
-
-	public List findByMoneyTotal(Object moneyTotal) {
-		return findByProperty(MONEY_TOTAL, moneyTotal);
-	}
-
-	public List findByCartDate(Object cartDate) {
-		return findByProperty(CART_DATE, cartDate);
-	}
-
-	public int getCount(int customerid, int goodsid, String keyword) {
-		String hql = "select count(*) from Cart as model where 1=1 ";
-		if (customerid > 0) {
-			System.out.println("---->customerid:" + customerid);
-			hql = hql + " and model.customer.customerId = " + customerid;
+	public List findAll() {
+		log.debug("finding all Cart instances");
+		try {
+			String queryString = "from Cart";
+			return getHibernateTemplate().find(queryString);
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
 		}
-		if (goodsid > 0) {
-			System.out.println("---->goodsid:" + goodsid);
-			hql = hql + " and model.goods.goodsId = " + goodsid;
-		}
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.cartDate like'%" + keyword + "%' or model.goods.goodsKeyWord like '%" + keyword
-					+ "%' or model.customer.customerPhone like '%" + keyword + "%')";
-		}
-
-		System.out.println(hql);
-		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
-		System.out.println("----->intValue:" + count.intValue());
-		return count.intValue();
-	}
-
-	public List findAll(int customerid, int goodsid, String keyword, final int start, final int length) {
-		String hql = "from Cart as model where 1=1 ";
-
-		if (customerid > 0) {
-			System.out.println("---->customerid:" + customerid);
-			hql = hql + " and model.customer.customerId = " + customerid;
-		}
-		if (goodsid > 0) {
-			System.out.println("---->goodsid:" + goodsid);
-			hql = hql + " and model.goods.goodsId = " + goodsid;
-		}
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.cartDate like'%" + keyword + "%' or model.goods.goodsKeyWord like '%" + keyword
-					+ "%' or model.customer.customerPhone like '%" + keyword + "%')";
-		}
-
-		final String hql1 = hql;
-
-		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException, SQLException {
-				Query query = session.createQuery(hql1);
-				System.out.println("------>hql:" + hql1);
-				query.setFirstResult(start);
-				query.setMaxResults(length);
-				List list = query.list();
-				return list;
-			}
-		});
-		return listTable;
 	}
 
 	public Cart merge(Cart detachedInstance) {

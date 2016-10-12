@@ -7,12 +7,15 @@
 	Push push = (Push) request.getAttribute("push");
 	Object user = session.getAttribute("user");
 	if (user == null) {
-		response.getWriter().println("<script>window.top.location.href='" + basePath + "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>window.top.location.href='" + basePath + "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>推送详情修改</title>
@@ -65,11 +68,13 @@
 	<div class="place">
 		<span>位置：</span>
 		<ul class="placeul">
-			<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-			<li><a href="<%=basePath%>push.jsp">信息推送</a></li>
-			<li><a href="<%=basePath%>push/push_doFind.action">推送列表</a></li>
-			<li><a onClick="history.back(-1)">查看推送</a></li>
-			<li><a href="#">推送信息</a></li>
+		<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a href="<%=basePath%>push.jsp">推送查找</a></li1>
+				<li1><a href="<%=basePath%>push/push_doFind.action">推送列表</a></li1>
+				<li1><a href="<%=basePath%>pushadd.jsp">添加推送信息</a></li1>
+				<li1><a href="<%=basePath%>push/push_doView.action?push.pushId=<%=push.getPushId()%>">推送详情</a></li1>
+			<li1><a style="color:blue;"  href="#">修改推送</a></li1>
+			<li1><a onClick="history.back(-1)">返回</a></li1>
 		</ul>
 	</div>
 	<div class="formbody">

@@ -1,12 +1,11 @@
 package dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
@@ -15,9 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import utils.HibernateSessionFactory;
 import bean.CAddress;
-import bean.Customer;
 
 /**
  * A data access object (DAO) providing persistence and search support for
@@ -39,11 +36,56 @@ public class CAddressDAO extends HibernateDaoSupport {
 	public static final String ADDRESS_CITY = "addressCity";
 	public static final String ADDRESS_STREET = "addressStreet";
 	public static final String ADDRESS_DETIAL = "addressDetial";
-	public static final String ADDRESS_DATE = "addressDate";
-	public static final String ADDRESS_STATUS = "addressStatus";
 
 	protected void initDao() {
 		// do nothing
+	}
+
+	public int getCount(int customerid, String keyword) {
+		System.out.println("customerid:" + customerid + "----keyword:" + keyword);
+		String hql = "select count(*) from CAddress as model where 1=1 ";
+		if (!keyword.equals("")) {
+			hql = hql + " and (model.addressName like '%" + keyword + "%' or model.addressPhone like '%" + keyword
+					+ "%' or model.addressProvince like '%" + keyword + "%' or model.addressCity like '%" + keyword
+					+ "%' or model.addressStreet like '%" + keyword + "%' or model.addressDetial like '%" + keyword
+					+ "%' or model.addressDate like '%" + keyword  + "%')";
+		}
+		if (customerid > 0) {
+			hql = hql + " and model.customer.customerId = " + customerid;
+		}
+
+		System.out.println(hql);
+		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
+		System.out.println("intValue:" + count.intValue());
+		return count.intValue();
+	}
+
+	public List findAll(final int customerid, String keyword, final int start, final int length) {
+		System.out.println("customerid:" + customerid + "----keyword:" + keyword);
+		String hql = "from CAddress as model where 1=1 ";
+		if (!keyword.equals("")) {
+			hql = hql + " and (model.addressName like '%" + keyword + "%' or model.addressPhone like '%" + keyword
+					+ "%' or model.addressProvince like '%" + keyword + "%' or model.addressCity like '%" + keyword
+					+ "%' or model.addressStreet like '%" + keyword + "%' or model.addressDetial like '%" + keyword
+					+ "%' or model.addressDate like '%" + keyword  + "%')";
+		}
+		if (customerid > 0) {
+			hql = hql + " and model.customer.customerId = " + customerid;
+		}
+
+		final String hql1 = hql;
+
+		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				Query query = session.createQuery(hql1);
+				System.out.println("-------->hql:" + hql1);
+				query.setFirstResult(start);
+				query.setMaxResults(length);
+				List list = query.list();
+				return list;
+			}
+		});
+		return listTable;
 	}
 
 	public void save(CAddress transientInstance) {
@@ -126,59 +168,15 @@ public class CAddressDAO extends HibernateDaoSupport {
 		return findByProperty(ADDRESS_DETIAL, addressDetial);
 	}
 
-	public List findByAddressDate(Object addressDate) {
-		return findByProperty(ADDRESS_DATE, addressDate);
-	}
-
-	public List findByAddressStatus(Object addressStatus) {
-		return findByProperty(ADDRESS_STATUS, addressStatus);
-	}
-
-	public int getCount(int customerid, String keyword) {
-		System.out.println("customerid:" + customerid + "----keyword:" + keyword);
-		String hql = "select count(*) from CAddress as model where 1=1 ";
-		if (!keyword.equals("")) {
-			hql = hql + " and (model.addressName like '%" + keyword + "%' or model.addressPhone like '%" + keyword
-					+ "%' or model.addressProvince like '%" + keyword + "%' or model.addressCity like '%" + keyword
-					+ "%' or model.addressStreet like '%" + keyword + "%' or model.addressDetial like '%" + keyword
-					+ "%' or model.addressDate like '%" + keyword + "%' or model.addressStatus like '%" + keyword + "%')";
+	public List findAll() {
+		log.debug("finding all CAddress instances");
+		try {
+			String queryString = "from CAddress";
+			return getHibernateTemplate().find(queryString);
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
 		}
-		if (customerid > 0) {
-			hql = hql + " and model.customer.customerId = " + customerid;
-		}
-
-		System.out.println(hql);
-		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
-		System.out.println("intValue:" + count.intValue());
-		return count.intValue();
-	}
-
-	public List findAll(final int customerid, String keyword, final int start, final int length) {
-		System.out.println("customerid:" + customerid + "----keyword:" + keyword);
-		String hql = "from CAddress as model where 1=1 ";
-		if (!keyword.equals("")) {
-			hql = hql + " and (model.addressName like '%" + keyword + "%' or model.addressPhone like '%" + keyword
-					+ "%' or model.addressProvince like '%" + keyword + "%' or model.addressCity like '%" + keyword
-					+ "%' or model.addressStreet like '%" + keyword + "%' or model.addressDetial like '%" + keyword
-					+ "%' or model.addressDate like '%" + keyword + "%' or model.addressStatus like '%" + keyword + "%')";
-		}
-		if (customerid > 0) {
-			hql = hql + " and model.customer.customerId = " + customerid;
-		}
-
-		final String hql1 = hql;
-
-		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException, SQLException {
-				Query query = session.createQuery(hql1);
-				System.out.println("-------->hql:" + hql1);
-				query.setFirstResult(start);
-				query.setMaxResults(length);
-				List list = query.list();
-				return list;
-			}
-		});
-		return listTable;
 	}
 
 	public CAddress merge(CAddress detachedInstance) {

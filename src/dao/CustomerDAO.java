@@ -37,9 +37,50 @@ public class CustomerDAO extends HibernateDaoSupport {
 	public static final String CUSTOMER_CODE = "customerCode";
 	public static final String CUSTOMER_TOKEN = "customerToken";
 	public static final String CUSTOMER_ARRAY = "customerArray";
+	public static final String THIRD_TYPE1 = "thirdType1";
+	public static final String THIRD_ACCOUNT1 = "thirdAccount1";
+	public static final String THIRD_TYPE2 = "thirdType2";
+	public static final String THIRD_ACCOUNT2 = "thirdAccount2";
 
 	protected void initDao() {
 		// do nothing
+	}
+
+	public int getCount(String keyword) {
+		String hql = "select count(*) from Customer as model where 1=1 ";
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.customerPhone like '%" + keyword + "%' or model.thirdAccount1 like '%" + keyword
+					+ "%' or model.thirdAccount2 like '%" + keyword + "%')";
+		}
+
+		System.out.println(hql);
+		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
+		System.out.println("----->intValue:" + count.intValue());
+		return count.intValue();
+	}
+
+	public List findAll(String keyword, final int start, final int length) {
+		String hql = "from Customer as model where 1=1 ";
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.customerPhone like '%" + keyword + "%' or model.thirdAccount1 like '%" + keyword
+					+ "%' or model.thirdAccount2 like '%" + keyword + "%')";
+		}
+
+		final String hql1 = hql;
+
+		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				Query query = session.createQuery(hql1);
+				System.out.println("------>hql:" + hql1);
+				query.setFirstResult(start);
+				query.setMaxResults(length);
+				List list = query.list();
+				return list;
+			}
+		});
+		return listTable;
 	}
 
 	public void save(Customer transientInstance) {
@@ -126,39 +167,31 @@ public class CustomerDAO extends HibernateDaoSupport {
 		return findByProperty(CUSTOMER_ARRAY, customerArray);
 	}
 
-	public int getCount(String keyword) {
-		String hql = "select count(*) from Customer as model where 1=1 ";
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.customerPhone like '%" + keyword + "%' or model.customerMail like '%" + keyword + "%')";
-		}
-
-		System.out.println(hql);
-		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
-		System.out.println("----->intValue:" + count.intValue());
-		return count.intValue();
+	public List findByThirdType1(Object thirdType1) {
+		return findByProperty(THIRD_TYPE1, thirdType1);
 	}
 
-	public List findAll(String keyword, final int start, final int length) {
-		String hql = "from Customer as model where 1=1 ";
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.customerPhone like '%" + keyword + "%' or model.customerMail like '%" + keyword + "%')";
+	public List findByThirdAccount1(Object thirdAccount1) {
+		return findByProperty(THIRD_ACCOUNT1, thirdAccount1);
+	}
+
+	public List findByThirdType2(Object thirdType2) {
+		return findByProperty(THIRD_TYPE2, thirdType2);
+	}
+
+	public List findByThirdAccount2(Object thirdAccount2) {
+		return findByProperty(THIRD_ACCOUNT2, thirdAccount2);
+	}
+
+	public List findAll() {
+		log.debug("finding all Customer instances");
+		try {
+			String queryString = "from Customer";
+			return getHibernateTemplate().find(queryString);
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
 		}
-
-		final String hql1 = hql;
-
-		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException, SQLException {
-				Query query = session.createQuery(hql1);
-				System.out.println("------>hql:" + hql1);
-				query.setFirstResult(start);
-				query.setMaxResults(length);
-				List list = query.list();
-				return list;
-			}
-		});
-		return listTable;
 	}
 
 	public Customer merge(Customer detachedInstance) {

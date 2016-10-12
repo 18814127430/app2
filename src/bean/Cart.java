@@ -1,5 +1,7 @@
 package bean;
 
+import java.sql.Timestamp;
+
 /**
  * Cart entity. @author MyEclipse Persistence Tools
  */
@@ -12,9 +14,7 @@ public class Cart implements java.io.Serializable {
 	private Goods goods;
 	private Customer customer;
 	private Integer goodsNum;
-	private Double moneyDeliver;
-	private Double moneyTotal;
-	private String cartDate;
+	private Timestamp cartDate;
 
 	// Constructors
 
@@ -23,12 +23,10 @@ public class Cart implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Cart(Goods goods, Customer customer, Integer goodsNum, Double moneyDeliver, Double moneyTotal, String cartDate) {
+	public Cart(Goods goods, Customer customer, Integer goodsNum, Timestamp cartDate) {
 		this.goods = goods;
 		this.customer = customer;
 		this.goodsNum = goodsNum;
-		this.moneyDeliver = moneyDeliver;
-		this.moneyTotal = moneyTotal;
 		this.cartDate = cartDate;
 	}
 
@@ -66,34 +64,17 @@ public class Cart implements java.io.Serializable {
 		this.goodsNum = goodsNum;
 	}
 
-	public Double getMoneyDeliver() {
-		return this.moneyDeliver;
-	}
-
-	public void setMoneyDeliver(Double moneyDeliver) {
-		this.moneyDeliver = moneyDeliver;
-	}
-
-	public Double getMoneyTotal() {
-		return this.moneyTotal;
-	}
-
-	public void setMoneyTotal(Double moneyTotal) {
-		this.moneyTotal = moneyTotal;
-	}
-
-	public String getCartDate() {
+	public Timestamp getCartDate() {
 		return this.cartDate;
 	}
 
-	public void setCartDate(String cartDate) {
+	public void setCartDate(Timestamp cartDate) {
 		this.cartDate = cartDate;
 	}
 
 	@Override
 	public String toString() {
-		return "Cart [cartId=" + cartId + ", goods=" + goods + ", customer=" + customer + ", goodsNum=" + goodsNum + ", moneyDeliver=" + moneyDeliver
-				+ ", moneyTotal=" + moneyTotal + ", cartDate=" + cartDate + "]";
+		return "Cart [cartId=" + cartId + ", goods=" + goods.getGoodsId() + ", customer=" + customer.getCustomerId() + ", goodsNum=" + goodsNum + ", cartDate=" + cartDate + "]";
 	}
 
 }

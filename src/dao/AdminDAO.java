@@ -1,7 +1,7 @@
 package dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import utils.HibernateSessionFactory;
 import bean.Admin;
 
 /**
@@ -40,10 +39,49 @@ public class AdminDAO extends HibernateDaoSupport {
 	public static final String ADMIN_REGION = "adminRegion";
 	public static final String ADMIN_IMG = "adminImg";
 	public static final String ADMIN_CLASS = "adminClass";
-	public static final String ADMIN_START_DATE = "adminStartDate";
+	public static final String ADMIN_DATES = "adminDates";
 
 	protected void initDao() {
 		// do nothing
+	}
+
+	public int getCount(String keyword) {
+		String hql = "select count(*) from Admin as model where 1=1 ";
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.adminAccount like '%" + keyword + "%' or model.adminName like '%" + keyword + "%' or model.adminPhone like'%"
+					+ keyword + "%' or model.adminMail like'%" + keyword + "%' or model.adminRegion like '%" + keyword
+					+ "%' or model.adminClass like '%" + keyword + "%' or model.adminStartDate like '%" + keyword + "%')";
+		}
+
+		System.out.println(hql);
+		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
+		System.out.println("----->intValue:" + count.intValue());
+		return count.intValue();
+	}
+
+	public List findAll(String keyword, final int start, final int length) {
+		String hql = "from Admin as model where 1=1 ";
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.adminAccount like '%" + keyword + "%' or model.adminName like '%" + keyword + "%' or model.adminPhone like'%"
+					+ keyword + "%' or model.adminMail like'%" + keyword + "%' or model.adminRegion like '%" + keyword
+					+ "%' or model.adminClass like '%" + keyword + "%' or model.adminStartDate like '%" + keyword + "%')";
+		}
+
+		final String hql1 = hql;
+
+		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				Query query = session.createQuery(hql1);
+				System.out.println("------>hql:" + hql1);
+				query.setFirstResult(start);
+				query.setMaxResults(length);
+				List list = query.list();
+				return list;
+			}
+		});
+		return listTable;
 	}
 
 	public void save(Admin transientInstance) {
@@ -134,47 +172,19 @@ public class AdminDAO extends HibernateDaoSupport {
 		return findByProperty(ADMIN_CLASS, adminClass);
 	}
 
-	public List findByAdminStartDate(Object adminStartDate) {
-		return findByProperty(ADMIN_START_DATE, adminStartDate);
+	public List findByAdminDates(Object adminDates) {
+		return findByProperty(ADMIN_DATES, adminDates);
 	}
 
-	public int getCount(String keyword) {
-		String hql = "select count(*) from Admin as model where 1=1 ";
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.adminAccount like '%" + keyword + "%' or model.adminName like '%" + keyword + "%' or model.adminPhone like'%"
-					+ keyword + "%' or model.adminMail like'%" + keyword + "%' or model.adminRegion like '%" + keyword
-					+ "%' or model.adminClass like '%" + keyword + "%' or model.adminStartDate like '%" + keyword + "%')";
+	public List findAll() {
+		log.debug("finding all Admin instances");
+		try {
+			String queryString = "from Admin";
+			return getHibernateTemplate().find(queryString);
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
 		}
-
-		System.out.println(hql);
-		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
-		System.out.println("----->intValue:" + count.intValue());
-		return count.intValue();
-	}
-
-	public List findAll(String keyword, final int start, final int length) {
-		String hql = "from Admin as model where 1=1 ";
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.adminAccount like '%" + keyword + "%' or model.adminName like '%" + keyword + "%' or model.adminPhone like'%"
-					+ keyword + "%' or model.adminMail like'%" + keyword + "%' or model.adminRegion like '%" + keyword
-					+ "%' or model.adminClass like '%" + keyword + "%' or model.adminStartDate like '%" + keyword + "%')";
-		}
-
-		final String hql1 = hql;
-
-		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException, SQLException {
-				Query query = session.createQuery(hql1);
-				System.out.println("------>hql:" + hql1);
-				query.setFirstResult(start);
-				query.setMaxResults(length);
-				List list = query.list();
-				return list;
-			}
-		});
-		return listTable;
 	}
 
 	public Admin merge(Admin detachedInstance) {

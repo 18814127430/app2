@@ -5,14 +5,17 @@
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
 	Admin admin = (Admin) request.getAttribute("admin");
-	Object user = session.getAttribute("user");
+	Admin user = (Admin)session.getAttribute("user");
 	if (user == null) {
-		response.getWriter().println("<script>top.location.href='" + basePath+ "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>top.location.href='" + basePath+ "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>修改管理员</title>
@@ -26,7 +29,7 @@
 <script type="text/javascript" src="<%=basePath%>js/jquery.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/select-ui.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/laydate.js"></script>
-
+<script type="text/javascript" src="<%=basePath%>js/jquery.md5.js"></script>
 
 
 <script type="text/javascript">
@@ -40,6 +43,7 @@
 				K('#image1').click(function() {
 					editor.loadPlugin('image', function() {
 						editor.plugin.imageDialog({
+							showRemote : false,
 							imageUrl : K('#url1').val(),
 							clickFn : function(url, title, width, height, border, align) {
 								
@@ -79,7 +83,6 @@
 }();
 </script>
 
-
 <script type="text/javascript">
 	/*验证表单*/
 	function checkForm() {
@@ -91,11 +94,15 @@
 			window.alert('请输入密码!');
 			return false;
 		}
-		if (document.getElementById("admin.adminPassword").value != 
-			document.getElementById("repeatPassword").value) {
+		if (document.getElementById("admin.adminPassword").value != document
+				.getElementById("repeatPassword").value) {
 			window.alert('两次密码不相同!');
 			return false;
 		}
+		else{
+			document.getElementById("admin.adminPassword").value=$.md5(document.getElementById("repeatPassword").value);
+		}
+		
 		if (document.getElementById("admin.adminName").value == "") {
 			window.alert('请输入姓名!');
 			return false;
@@ -120,20 +127,21 @@
 	}
 </script>
 
-
 </head>
 
 <body>
-	<form action="<%=basePath%>admin/admin_doUpdate.action" method="post" onsubmit="return checkForm();" enctype="multipart/form-data" name="form1">
+	<form action="<%=basePath%>admin/admin_doUpdate.action" onsubmit="return checkForm();" enctype="multipart/form-data" name="form1" method="post">
 	
 		<div class="place">
 			<span>位置：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a href="<%=basePath%>admin.jsp">管理员</a></li>
-				<li><a href="<%=basePath %>admin/admin_doFind.action">管理员列表</a></li>
-				<li><a onClick="history.back(-1)">管理员信息</a></li>
-				<li><a href="#">管理员修改</a></li>
+				<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a href="<%=basePath%>admin.jsp">管理员查找</a></li1>
+				<li1><a href="<%=basePath%>admin/admin_doFind.action">管理员列表</a></li1>
+				<li1><a href="<%=basePath%>adminadd.jsp">管理员添加</a></li1>
+				<li1><a href="<%=basePath%>admin/admin_doView.action?admin.adminId=<%=admin.getAdminId()%>">管理员信息</a></li1>
+				<li1><a  style="color:blue;" href="<%=basePath%>admin/admin_doEdit.action?admin.adminId=<%=admin.getAdminId()%>">管理员修改</a></li1>
+				<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 		
@@ -145,13 +153,16 @@
 				<ul class="forminfo">
 					<li><input type="hidden" name="admin.adminId" id="admin.adminId" value='<%=admin.getAdminId()%>' /></li>
 					<li><input type="hidden" name="admin.adminStartDate" id="admin.adminStartDate" value='<%=admin.getAdminStartDate()%>' /></li>
+					<li><input type="hidden" name="admin.adminDates" id="admin.adminDates" value='<%=admin.getAdminDates()%>' /></li>
 					<li><label>账号<b>*</b></label> <input type="text" class="dfinput" name="admin.adminAccount" id="admin.adminAccount" value='<%=admin.getAdminAccount()%>' style="width:320px;" /></li>
 					<li><label>密码<b>*</b></label> <input type="password" class="dfinput" name="admin.adminPassword" id="admin.adminPassword" value="" placeholder="请填写密码" style="width:320px;" /></li>
-					<li><label>确认密码<b>*</b></label> <input type="password" class="dfinput" name="reaptPassword" id="reaptPassword" value="" placeholder="请确认密码" style="width:320px;" /></li>
+					<li><label>确认密码<b>*</b></label> <input type="password" class="dfinput" name="repeatPassword" id="repeatPassword" value="" placeholder="请确认密码" style="width:320px;" /></li>
 					<li><label>姓名<b>*</b></label> <input type="text" class="dfinput" name="admin.adminName" id="admin.adminName" value='<%=admin.getAdminName()%>' style="width:320px;" /></li>
 					<li><label>电话<b>*</b></label> <input type="text" class="dfinput" name="admin.adminPhone" id="admin.adminPhone" value='<%=admin.getAdminPhone()%>' style="width:320px;" /></li>
 					<li><label>邮箱<b>*</b></label> <input type="text" class="dfinput" name="admin.adminMail" id="admin.adminMail" value='<%=admin.getAdminMail()%>' style="width:320px;" /></li>
 					<li><label>地区<b>*</b></label> <input type="text" class="dfinput" name="admin.adminRegion" id="admin.adminRegion" value='<%=admin.getAdminRegion()%>' style="width:320px;" /></li>
+					
+					<%if (user.getAdminClass().equalsIgnoreCase("super")) { %>
 					<li><label>管理等级<b>*</b></label>
 						<div class="vocation">
 							<select class="select1" id="adminClass" name="admin.adminClass">
@@ -159,11 +170,15 @@
 								<option>super</option>
 							</select>
 						</div></li>
+					<%} %>
+					
 					<li><label>&nbsp;</label> <input type="submit" name="button" class="btn" value="确认" /> 
 					<input name="" type="button" class="btn" value="返回" onClick="history.back(-1)" /></li>
 					
 				</ul>
 			</div>
+			
+			
 			<div class="MID2">
 				<ul class="forminfo1">
 					<li>

@@ -11,57 +11,57 @@ public class LogsService {
 	private LogsDAO logsDao;
 
 	public Logs Add(Logs logs) {
-		Logs db_logs = logsDao.findById(logs.getLogsId());
-		if (db_logs != null) {
-			this.Msg = msg.add_fail_name;
-			System.out.println(this.Msg);
+		Logs db_logs = logsDao.merge(logs);
+		if (db_logs == null) {
+			this.Msg = msg.logs_logsnull;
 			return null;
 		}
-		Logs result = logsDao.merge(logs);
-		this.Msg = msg.add_success;
-		return result;
+		this.Msg = msg.logs_success;
+		return db_logs;
 	}
 
 	public boolean Delete(Logs logs) throws Exception {
 		Logs db_logs = logsDao.findById(logs.getLogsId());
 		if (db_logs == null) {
-			this.Msg = msg.delete_fail_id;
-			System.out.println(this.Msg);
+			this.Msg = msg.logs_logsnull;
 			return false;
 		}
 		logsDao.delete(logs);
+		this.Msg = msg.logs_success;
 		return true;
 	}
 
 	public Logs View(int logsID) throws Exception {
 		Logs db_logs = logsDao.findById(logsID);
 		if (db_logs == null) {
-			this.Msg = msg.find_fail_id;
-			System.out.println(this.Msg);
+			this.Msg = msg.logs_logsnull;
 			return null;
 		}
+		this.Msg = msg.logs_success;
 		return db_logs;
 	}
 
-	public int GetCount(String keyword) throws Exception {
-		return logsDao.getCount(keyword);
+	public int Count_Keyword(String keyword) throws Exception {
+		int count = logsDao.getCount(keyword);
+		this.Msg = msg.logs_success;
+		return count;
 	}
 
-	public List<?> Find(String keyword, int start, int length) throws Exception {
-		List<?> list = logsDao.findAll(keyword, start, length);
-		System.out.println("5859294:" + list.size());
+	public List Find_Keyword(String keyword, int start, int length) throws Exception {
+		List list = logsDao.findAll(keyword, start, length);
+		this.Msg = msg.logs_success;
 		return list;
 	}
 
 	public Logs Update(Logs logs) throws Exception {
 		Logs db_logs = logsDao.findById(logs.getLogsId());
 		if (db_logs == null) {
-			this.Msg = msg.update_fail_id;
-			System.out.println(this.Msg);
+			this.Msg = msg.logs_logsnull;
 			return null;
 		}
-		Logs result = logsDao.merge(logs);
-		return result;
+		db_logs = logsDao.merge(logs);
+		this.Msg = msg.logs_success;
+		return db_logs;
 	}
 
 	public String getMsg() {

@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -29,11 +30,45 @@ import bean.Logs;
 public class LogsDAO extends HibernateDaoSupport {
 	private static final Log log = LogFactory.getLog(LogsDAO.class);
 	// property constants
-	public static final String LOGS_DATE = "logsDate";
 	public static final String LOGS_CONTENT = "logsContent";
 
 	protected void initDao() {
 		// do nothing
+	}
+
+	public int getCount(String keyword) {
+		String hql = "select count(*) from Logs as model where 1=1 ";
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.logsDate like '%" + keyword + "%' or model.logsContent like '%" + keyword + "%')";
+		}
+
+		System.out.println(hql);
+		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
+		System.out.println("----->intValue:" + count.intValue());
+		return count.intValue();
+	}
+
+	public List findAll(String keyword, final int start, final int length) {
+		String hql = "from Logs as model where 1=1 ";
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.logsDate like '%" + keyword + "%' or model.logsContent like '%" + keyword + "%')";
+		}
+
+		final String hql1 = hql;
+
+		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				Query query = session.createQuery(hql1);
+				System.out.println("------>hql:" + hql1);
+				query.setFirstResult(start);
+				query.setMaxResults(length);
+				List list = query.list();
+				return list;
+			}
+		});
+		return listTable;
 	}
 
 	public void save(Logs transientInstance) {
@@ -92,47 +127,19 @@ public class LogsDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public List findByLogsDate(Object logsDate) {
-		return findByProperty(LOGS_DATE, logsDate);
-	}
-
 	public List findByLogsContent(Object logsContent) {
 		return findByProperty(LOGS_CONTENT, logsContent);
 	}
 
-	public int getCount(String keyword) {
-		String hql = "select count(*) from Logs as model where 1=1 ";
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.logsDate like '%" + keyword + "%' or model.logsContent like '%" + keyword + "%')";
+	public List findAll() {
+		log.debug("finding all Logs instances");
+		try {
+			String queryString = "from Logs";
+			return getHibernateTemplate().find(queryString);
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
 		}
-
-		System.out.println(hql);
-		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
-		System.out.println("----->intValue:" + count.intValue());
-		return count.intValue();
-	}
-
-	public List findAll(String keyword, final int start, final int length) {
-		String hql = "from Logs as model where 1=1 ";
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.logsDate like '%" + keyword + "%' or model.logsContent like '%" + keyword + "%')";
-		}
-
-		final String hql1 = hql;
-
-		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException, SQLException {
-				Query query = session.createQuery(hql1);
-				System.out.println("------>hql:" + hql1);
-				query.setFirstResult(start);
-				query.setMaxResults(length);
-				List list = query.list();
-				return list;
-			}
-		});
-		return listTable;
 	}
 
 	public Logs merge(Logs detachedInstance) {

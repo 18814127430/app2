@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -31,11 +32,45 @@ public class HelpDAO extends HibernateDaoSupport {
 	// property constants
 	public static final String HELP_TITLE = "helpTitle";
 	public static final String HELP_KEY_WORD = "helpKeyWord";
-	public static final String HELP_DATE = "helpDate";
 	public static final String HELP_CONTEXT = "helpContext";
 
 	protected void initDao() {
 		// do nothing
+	}
+
+	public int getCount(String keyword) {
+		String hql = "select count(*) from Help as model where 1=1 ";
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.helpKeyWord like '%" + keyword + "%')";
+		}
+
+		System.out.println(hql);
+		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
+		System.out.println("----->intValue:" + count.intValue());
+		return count.intValue();
+	}
+
+	public List findAll(String keyword, final int start, final int length) {
+		String hql = "from Help as model where 1=1 ";
+		if (!keyword.equals("")) {
+			System.out.println("---->keyword:" + keyword);
+			hql = hql + " and (model.helpKeyWord like '%" + keyword + "%')";
+		}
+
+		final String hql1 = hql;
+
+		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				Query query = session.createQuery(hql1);
+				System.out.println("------>hql:" + hql1);
+				query.setFirstResult(start);
+				query.setMaxResults(length);
+				List list = query.list();
+				return list;
+			}
+		});
+		return listTable;
 	}
 
 	public void save(Help transientInstance) {
@@ -102,47 +137,19 @@ public class HelpDAO extends HibernateDaoSupport {
 		return findByProperty(HELP_KEY_WORD, helpKeyWord);
 	}
 
-	public List findByHelpDate(Object helpDate) {
-		return findByProperty(HELP_DATE, helpDate);
-	}
-
 	public List findByHelpContext(Object helpContext) {
 		return findByProperty(HELP_CONTEXT, helpContext);
 	}
 
-	public int getCount(String keyword) {
-		String hql = "select count(*) from Help as model where 1=1 ";
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.helpKeyWord like '%" + keyword + "%')";
+	public List findAll() {
+		log.debug("finding all Help instances");
+		try {
+			String queryString = "from Help";
+			return getHibernateTemplate().find(queryString);
+		} catch (RuntimeException re) {
+			log.error("find all failed", re);
+			throw re;
 		}
-
-		System.out.println(hql);
-		Integer count = (Integer) getHibernateTemplate().find(hql).listIterator().next();
-		System.out.println("----->intValue:" + count.intValue());
-		return count.intValue();
-	}
-
-	public List findAll(String keyword, final int start, final int length) {
-		String hql = "from Help as model where 1=1 ";
-		if (!keyword.equals("")) {
-			System.out.println("---->keyword:" + keyword);
-			hql = hql + " and (model.helpKeyWord like '%" + keyword + "%')";
-		}
-
-		final String hql1 = hql;
-
-		List listTable = getHibernateTemplate().executeFind(new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException, SQLException {
-				Query query = session.createQuery(hql1);
-				System.out.println("------>hql:" + hql1);
-				query.setFirstResult(start);
-				query.setMaxResults(length);
-				List list = query.list();
-				return list;
-			}
-		});
-		return listTable;
 	}
 
 	public Help merge(Help detachedInstance) {

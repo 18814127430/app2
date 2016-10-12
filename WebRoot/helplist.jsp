@@ -15,11 +15,14 @@
     int PAGE_SIZE	=	(Integer)request.getAttribute("PAGE_SIZE");  //一共多少记录
     Object user		=	session.getAttribute("user");
     if (user == null) {
-		response.getWriter().println("<script>window.top.location.href='" + basePath + "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>window.top.location.href='" + basePath + "';</script>");
 	}
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>帮助列表</title>
@@ -110,14 +113,16 @@
 		<div class="place">
 			<span>位置：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a href="<%=basePath%>help/help_doFind.action">帮助列表</a></li>
+			<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a href="<%=basePath%>help.jsp">帮助查找</a></li1>
+				<li1><a  style="color:blue;" href="<%=basePath%>help/help_doFind.action">帮助列表</a></li1>
+				<li1><a href="<%=basePath%>helpadd.jsp">帮助添加</a></li1>
+				<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 		<div class="rightinfo">
 			<div class="tools">
 				<ul class="toolbar">
-					<li class="" onclick="javascript:location.href='<%=basePath%>helpadd.jsp'"><span><img src="<%=basePath%>images/t01.png" /></span>添加</li>
 					<li onclick="javascript:edit();"><span><img src="<%=basePath%>images/t02.png" /></span>修改</li>
 					<li onclick="javascript:deleteAll();"><span><img src="<%=basePath%>images/t03.png" /></span>删除</li>
 				</ul>
@@ -152,11 +157,11 @@
 					%>
 					<tr>
 						<td><input name="check" type="checkbox" value="<%=help.getHelpId()%>"></input></td>
-						<td><div align="center"><%=currentIndex%></div></td>
-						<td><%=help.getHelpTitle()%></td>
-						<td><%=help.getHelpKeyWord()%></td>
-						<td><%=help.getHelpDate()%></td>
-						<td><a href="<%=basePath%>help/help_doView.action?help.helpId=<%=help.getHelpId()%>" style="cursor:hand;" class="tablelink">查看</a> 
+						<td onclick="javascript:location.href='<%=basePath%>help/help_doView.action?help.helpId=<%=help.getHelpId()%>'"><div align="center"><%=currentIndex%></div></td>
+						<td onclick="javascript:location.href='<%=basePath%>help/help_doView.action?help.helpId=<%=help.getHelpId()%>'"><%=help.getHelpTitle()%></td>
+						<td onclick="javascript:location.href='<%=basePath%>help/help_doView.action?help.helpId=<%=help.getHelpId()%>'"><%=help.getHelpKeyWord()%></td>
+						<td onclick="javascript:location.href='<%=basePath%>help/help_doView.action?help.helpId=<%=help.getHelpId()%>'"><%=help.getHelpDate()%></td>
+						<td onclick="javascript:location.href='<%=basePath%>help/help_doView.action?help.helpId=<%=help.getHelpId()%>'"><a href="<%=basePath%>help/help_doView.action?help.helpId=<%=help.getHelpId()%>" style="cursor:hand;" class="tablelink">查看</a> 
 						<a href="<%=basePath%>help/help_doDelete.action?help.helpId=<%=help.getHelpId()%>&currentPage=<%=currentPage%>" onClick="return checkDelete()" style="cursor:hand;" class="tablelink1">删除</a></td>
 					</tr>
 					<%
@@ -182,7 +187,7 @@
 					<%
 						if(firstPage-PAGE_SIZE>=1) {
 					%>
-					<li class="paginItem"><a href="<%=basePath%>help/help_doFind.action?currentPage=<%=firstPage-PAGE_SIZE%>">
+					<li class="paginItem"><a href="<%=basePath%>help/help_doFind.action?currentPage=<%=firstPage-PAGE_SIZE%>&keyword=<%=keyword%>">
 							<span class="pagepre"></span>
 						</a></li>
 					<%
@@ -191,16 +196,16 @@
 
 					<%
 						for (int i = firstPage; i <=lastPage; i++) {
-																					if(i==currentPage){
+						if(i==currentPage){
 					%>
 
-					<li class="paginItem current"><a href="<%=basePath%>help/help_doFind.action?currentPage=<%=i%>"><%=i%></a></li>
+					<li class="paginItem current"><a href="<%=basePath%>help/help_doFind.action?currentPage=<%=i%>&keyword=<%=keyword%>"><%=i%></a></li>
 
 					<%
 						continue;}
 					%>
 
-					<li class="paginItem"><a href="<%=basePath%>help/help_doFind.action?currentPage=<%=i%>"><%=i%></a></li>
+					<li class="paginItem"><a href="<%=basePath%>help/help_doFind.action?currentPage=<%=i%>&keyword=<%=keyword%>"><%=i%></a></li>
 
 					<%
 						}
@@ -208,7 +213,7 @@
 					<%
 						if(lastPage<totalPage){
 					%>
-					<li class="paginItem"><a href="<%=basePath%>help/help_doFind.action?currentPage=<%=firstPage+PAGE_SIZE%>">
+					<li class="paginItem"><a href="<%=basePath%>help/help_doFind.action?currentPage=<%=firstPage+PAGE_SIZE%>&keyword=<%=keyword%>">
 							<span class="pagenxt"></span>
 						</a></li>
 					<%

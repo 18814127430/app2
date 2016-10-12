@@ -7,12 +7,15 @@
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 	Admin user = (Admin) session.getAttribute("user");
 	if (user == null) {
-		response.getWriter().println("<script>top.location.href='" + basePath + "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>top.location.href='" + basePath + "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>管理员首页</title>
@@ -26,10 +29,13 @@
 	<form action="<%=basePath%>/admin/admin_doFind.action" name="adminForm" id="adminForm" method="post">
 
 		<div class="place">
-			<span>当前位置：</span>
+			<span>位置：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a href="<%=basePath%>admin.jsp">管理员</a></li>
+				<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a  style="color:blue;" href="<%=basePath%>admin.jsp">管理员查找</a></li1>
+				<li1><a href="<%=basePath%>admin/admin_doFind.action">管理员列表</a></li1>
+				<li1><a href="<%=basePath%>adminadd.jsp">管理员添加</a></li1>
+				<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 

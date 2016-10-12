@@ -14,12 +14,15 @@
 	int goodsid = 	(Integer)request.getAttribute("goodsid");
 	List<Company> companylist = (List<Company>)request.getAttribute("companylist");
 	if (user == null) {
-		response.getWriter().println("<script>top.location.href='" + basePath+ "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>top.location.href='" + basePath+ "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>添加商品批次</title>
@@ -91,27 +94,40 @@
 <script type="text/javascript">
 	/*验证表单*/
 	function checkForm() {
-		if (document.getElementById("gbatch.batchNumTotal").value == "") {
+		if (document.getElementById("gbatch.numTotal").value == "") {
 			window.alert('请输入批次总数量!');
 			return false;
 		}
-		if (document.getElementById("gbatch.batchNumStock").value == "") {
+		if (isNaN(document.getElementById("gbatch.numTotal").value)) {
+			window.alert('批次总数量：请输入数字!');
+			return false;
+		}
+		if (document.getElementById("gbatch.numStock").value == "") {
 			window.alert('请输入批次库存!');
 			return false;
 		}
-		if (document.getElementById("gbatch.batchDateKeep").value == "") {
-			window.alert('请输入批次保质期!');
+		if (isNaN(document.getElementById("gbatch.numStock").value)) {
+			window.alert('批次库存：请输入数字!');
 			return false;
 		}
-		if (document.getElementById("gbatch.producerSendDate").value == "") {
-			window.alert('请输入批次生产时间!');
+		if (document.getElementById("gbatch.dateKeep1").value == "") {
+			window.alert('请输入批次保质期开始时间!');
+			return false;
+		}
+		if (document.getElementById("gbatch.dateKeep2").value == "") {
+			window.alert('请输入批次保质期结束时间!');
+			return false;
+		}
+		if (document.getElementById("gbatch.dateSend").value == "") {
+			window.alert('请输入生产商发货时间!');
+			return false;
+		}
+		if (document.getElementById("gbatch.dateRec").value == "") {
+			window.alert('请输入销售商收货时间!');
 			return false;
 		}
 		if (document.getElementById("gbatch.producerSendContent").value == "") {
 			window.alert('请输入批次生产详情!');
-			return false;
-		}if (document.getElementById("gbatch.sellerReceiveDate").value == "") {
-			window.alert('请输入批次入店时间!');
 			return false;
 		}
 		if (document.getElementById("gbatch.sellerReceiveContent").value == "") {
@@ -136,38 +152,35 @@
 </head>
 
 <body>
-<!-- 	<div class="place"> -->
-<!-- 		<span>位置：</span> -->
-<!-- 		<ul class="placeul"> -->
-<!-- 			<li><a href="<%=basePath%>mainindex.jsp">首页</a></li> -->
-<!-- 			<li><a href="<%=basePath%>gbatch/gbatch_beforedoAdd.action" target="rightFrame">商品添加</a></li> -->
-<!-- 		</ul> -->
-<!-- 	</div> -->
+<div class="place">
+		<span>位置:</span>
+		<ul class="placeul">
+		
+		<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+			<li1><a href="<%=basePath%>goods.jsp">商品</a></li1>
+			<li1><a href="<%=basePath%>sort/sort_doFind.action">商品分类</a></li1>
+			<li1><a href="<%=basePath%>goods/goods_doFind.action">商品列表</a></li1>
+			<li1><a href="<%=basePath%>goods/goods_doView.action?goods.goodsId=<%=goodsid%>">商品详情</a></li1>
+			<li1><a href="<%=basePath%>gbatch/gbatch_doFind.action?goodsid=<%=goodsid%>">批次列表</a></li1>
+			<li1><a href="<%=basePath%>oinfo/oinfo_doFind.action?goodsid=<%=goodsid%>">订单列表</a></li1>
+			<li1><a  style="color:blue;" href="<%=basePath%>gbatch/gbatch_beforedoAdd.action?goodsid=<%=goodsid%>">添加批次</a></li1>
+			<li1><a onClick="history.back(-1)">返回</a></li1>
+		</ul>
+	</div>
 
 	<div class="formbody">
 
 		<div id="usual1" name="usual1" class="usual">
 
-			<div class="itab">
-				<ul>
-					<li><a href="<%=basePath%>goods/goods_doView.action?goods.goodsId=<%=goodsid%>">商品查看</a></li>
-					<li><a href="<%=basePath%>gbatch/gbatch_doFindByGoodsId.action?goodsid=<%=goodsid%>">批次列表</a></li>
-					<li><a href="<%=basePath%>oinfo/oinfo_doFindByGoodsId.action?goodsid=<%=goodsid%>">订单列表</a></li>
-					<li><a href="<%=basePath%>comment/comment_doFindByGoodsId.action?goodsid=<%=goodsid%>">评论列表</a></li>
-					<li><a href="#tab5" class="selected">添加批次</a></li>
-				</ul>
-			</div>
-
 			<form action="<%=basePath%>gbatch/gbatch_doAdd.action" method="post" onsubmit="return checkForm();" enctype="multipart/form-data" name="form1">
 				<div id="tab5" name="tab5" class="tabson">
 					<ul class="forminfo">
 						<input name="goodsid" id="goodsid" type="hidden" value="<%=goodsid%>" />
-						<li><label>该批次数量<b>*</b></label><input name="gbatch.batchNumTotal" id="gbatch.batchNumTotal" type="text" value="" class="dfinput" placeholder="请填写数量" style="width:320px;" /></li>
-						<li><label>该批次库存<b>*</b></label><input name="gbatch.batchNumStock" id="gbatch.batchNumStock" type="text" value="" class="dfinput" placeholder="请填写库存" style="width:320px;" /></li>
-						<li><label>保质期<b>*</b></label><input name="gbatch.batchDateKeep" id="gbatch.batchDateKeep" type="text" value="" class="dfinput" placeholder="请填写保质期" style="width:320px;" /></li>
-						<li><label>生产时间<b>*</b></label><input name="gbatch.producerSendDate" id="gbatch.producerSendDate" type="text" value="" class="laydate-icon" placeholder="请填写生产时间" style="width:320px;"
+						<li><label>该批次数量<b>*</b></label><input name="gbatch.numTotal" id="gbatch.numTotal" type="text" value="" class="dfinput" placeholder="请填写数量" style="width:320px;" /></li>
+						<li><label>该批次库存<b>*</b></label><input name="gbatch.numStock" id="gbatch.numStock" type="text" value="" class="dfinput" placeholder="请填写库存" style="width:320px;" /></li>
+						<li><label>开始保质期<b>*</b></label><input name="gbatch.dateKeep1" id="gbatch.dateKeep1" type="text" value="" class="laydate-icon" placeholder="请填写保质期" style="width:320px;"
 							onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" /></li>
-						<li><label>入货时间<b>*</b></label><input name="gbatch.sellerReceiveDate" id="gbatch.sellerReceiveDate" type="text" value="" class="laydate-icon" placeholder="请填写入店时间" style="width:320px;"
+						<li><label>结束保质期<b>*</b></label><input name="gbatch.dateKeep2" id="gbatch.dateKeep2" type="text" value="" class="laydate-icon" placeholder="请填写保质期" style="width:320px;"
 							onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" /></li>
 
 
@@ -184,7 +197,8 @@
 									%>
 								</select>
 							</div></li>
-
+						<li><label>发货时间<b>*</b></label><input name="gbatch.dateSend" id="gbatch.dateSend" type="text" value="" class="laydate-icon" placeholder="请填写生产商发货时间" style="width:320px;"
+							onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" /></li>
 
 						<li><label>销售商<b>*</b></label>
 							<div class="usercity">
@@ -199,9 +213,11 @@
 									%>
 								</select>
 							</div></li>
-
-						<li><label>生产详情<b>*</b></label> <textarea id="gbatch.producerSendContent" name="gbatch.producerSendContent" style="width:700px;height:250px;visibility:hidden;"></textarea></li>
-						<li><label>其他详情<b>*</b></label> <textarea id="gbatch.sellerReceiveContent" name="gbatch.sellerReceiveContent" style="width:700px;height:250px;visibility:hidden;"></textarea></li>
+						<li><label>收货时间<b>*</b></label><input name="gbatch.dateRec" id="gbatch.dateRec" type="text" value="" class="laydate-icon" placeholder="请填写销售商收货时间" style="width:320px;"
+							onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" /></li>
+							
+						<li><label>生产详情<b>*</b></label> <textarea id="gbatch.producerSendContent" name="gbatch.producerSendContent" style="width:700px;height:250px;visibility:hidden;"> </textarea></li>
+						<li><label>其他详情<b>*</b></label> <textarea id="gbatch.sellerReceiveContent" name="gbatch.sellerReceiveContent" style="width:700px;height:250px;visibility:hidden;"> </textarea></li>
 						<li><label>&nbsp;</label><input name="button" type="submit" class="btn" value="数据录入" /></li>
 					</ul>
 				</div>

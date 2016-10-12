@@ -8,12 +8,15 @@
 	Cart cart = (Cart) request.getAttribute("cart");
 	Object user = session.getAttribute("user");
 	if (user == null) {
-		response.getWriter().println("<script>window.top.location.href='" + basePath + "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>window.top.location.href='" + basePath + "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>查看购物车</title>
@@ -34,9 +37,16 @@
 	<div class="place">
 		<span>位置：</span>
 		<ul class="placeul">
-			<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-			<li><a onClick="history.back(-1)">上一级</a></li>
-			<li><a href="#">购物车详情</a></li>
+			<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+			<li1><a href="<%=basePath%>customer/customer_doFind.action">顾客列表</a></li1>
+			<li1><a href="<%=basePath%>customer/customer_doView.action?customerid=<%=cart.getCustomer().getCustomerId()%>">顾客信息</a></li1>
+			<li1><a href="<%=basePath%>caddress/caddress_doFind.action?customerid=<%=cart.getCustomer().getCustomerId()%>">地址列表</a></li1>
+			<li1><a  style="color:blue;" href="<%=basePath%>cart/cart_doView.action?cart.cartId=<%=cart.getCartId()%>">购物车详情</a></li1>
+			<li1><a href="<%=basePath%>oorder/oorder_doFind.action?customerid=<%=cart.getCustomer().getCustomerId()%>">订单列表</a></li1>
+			<li1><a href="<%=basePath%>cart/cart_doFind.action?customerid=<%=cart.getCustomer().getCustomerId()%>">购物车列表</a></li1>
+			<li1><a href="<%=basePath%>collect/collect_doFind.action?customerid=<%=cart.getCustomer().getCustomerId()%>">收藏列表</a></li1>
+			<li1><a href="<%=basePath%>comment/comment_doFind.action?customerid=<%=cart.getCustomer().getCustomerId()%>">评论列表</a></li1>
+			<li1><a onClick="history.back(-1)">返回</a></li1>
 		</ul>
 	</div>
 
@@ -52,16 +62,13 @@
 			<li><label>商品ID</label> <input value="<%=cart.getGoods().getGoodsId()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
 			<li><label>商品名</label> <input value="<%=cart.getGoods().getGoodsName()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
 			<li><label>数量</label> <input value="<%=cart.getGoodsNum()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>运费</label> <input value="<%=cart.getMoneyDeliver()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>总金额</label> <input value="<%=cart.getMoneyTotal()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>单价</label> <input value="<%=cart.getGoods().getMoneyNew()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>总金额</label> <input value="<%=cart.getGoodsNum() * cart.getGoods().getMoneyNew()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
 			<div class="ibox"></div>
 			<li><label>&nbsp;</label> <input name="" type="button" class="btn" value="返回" onClick="history.back(-1)" /></li>
 		</ul>
 
 	</div>
-	<div class="ibox"></div>
-	<div class="ibox"></div>
-	<div class="ibox"></div>
 	<div class="ibox"></div>
 </body>
 </html>

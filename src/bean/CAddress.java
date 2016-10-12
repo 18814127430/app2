@@ -1,5 +1,7 @@
 package bean;
 
+import java.sql.Timestamp;
+
 /**
  * CAddress entity. @author MyEclipse Persistence Tools
  */
@@ -16,8 +18,7 @@ public class CAddress implements java.io.Serializable {
 	private String addressCity;
 	private String addressStreet;
 	private String addressDetial;
-	private String addressDate;
-	private String addressStatus;
+	private Timestamp addressDate;
 
 	// Constructors
 
@@ -27,7 +28,7 @@ public class CAddress implements java.io.Serializable {
 
 	/** full constructor */
 	public CAddress(Customer customer, String addressName, String addressPhone, String addressProvince, String addressCity, String addressStreet,
-			String addressDetial, String addressDate, String addressStatus) {
+			String addressDetial, Timestamp addressDate) {
 		this.customer = customer;
 		this.addressName = addressName;
 		this.addressPhone = addressPhone;
@@ -36,7 +37,6 @@ public class CAddress implements java.io.Serializable {
 		this.addressStreet = addressStreet;
 		this.addressDetial = addressDetial;
 		this.addressDate = addressDate;
-		this.addressStatus = addressStatus;
 	}
 
 	// Property accessors
@@ -105,27 +105,19 @@ public class CAddress implements java.io.Serializable {
 		this.addressDetial = addressDetial;
 	}
 
-	public String getAddressDate() {
+	public Timestamp getAddressDate() {
 		return this.addressDate;
 	}
 
-	public void setAddressDate(String addressDate) {
+	public void setAddressDate(Timestamp addressDate) {
 		this.addressDate = addressDate;
-	}
-
-	public String getAddressStatus() {
-		return this.addressStatus;
-	}
-
-	public void setAddressStatus(String addressStatus) {
-		this.addressStatus = addressStatus;
 	}
 
 	@Override
 	public String toString() {
-		return "CAddress [addressId=" + addressId + ", customer=" + customer + ", addressName=" + addressName + ", addressPhone=" + addressPhone
-				+ ", addressProvince=" + addressProvince + ", addressCity=" + addressCity + ", addressStreet=" + addressStreet + ", addressDetial="
-				+ addressDetial + ", addressDate=" + addressDate + ", addressStatus=" + addressStatus + "]";
+		return "CAddress [addressId=" + addressId + ", addressName=" + addressName + ", addressPhone=" + addressPhone + ", addressProvince="
+				+ addressProvince + ", addressCity=" + addressCity + ", addressStreet=" + addressStreet + ", addressDetial=" + addressDetial
+				+ ", addressDate=" + addressDate + "]";
 	}
 
 }

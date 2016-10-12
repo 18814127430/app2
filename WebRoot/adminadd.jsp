@@ -4,19 +4,18 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
 	Object user = session.getAttribute("user");
 	if (user == null) {
-		response.getWriter().println(
-				"<script>top.location.href='" + basePath
-						+ "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>top.location.href='" + basePath+ "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>添加管理员</title>
@@ -30,6 +29,7 @@
 <script type="text/javascript" src="<%=basePath%>js/jquery.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/select-ui.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/laydate.js"></script>
+<script type="text/javascript" src="<%=basePath%>js/jquery.md5.js"></script>
 
 
 <script type="text/javascript">
@@ -43,6 +43,21 @@
 				K('#image1').click(function() {
 					editor.loadPlugin('image',function() {
 						editor.plugin.imageDialog({
+							imageUrl : K('#url1').val(),
+							clickFn : function(url,title,width,height,border,align) {
+							var div = K('#localImage');
+							div.html('');
+							div.append('<img src="' + url + '" width=150 height=160 style="diplay:none" />');
+							K('#url1').val(url);
+							editor.hideDialog();
+							}
+					});
+				});
+			  });
+				K('#localImage').click(function() {
+					editor.loadPlugin('image',function() {
+						editor.plugin.imageDialog({
+							showRemote : false,
 							imageUrl : K('#url1').val(),
 							clickFn : function(url,title,width,height,border,align) {
 							var div = K('#localImage');
@@ -99,6 +114,10 @@
 			window.alert('两次密码不相同!');
 			return false;
 		}
+		else{
+			document.getElementById("admin.adminPassword").value=$.md5(document.getElementById("repeatPassword").value);
+		}
+		
 		if (document.getElementById("admin.adminName").value == "") {
 			window.alert('请输入姓名!');
 			return false;
@@ -133,9 +152,11 @@
 		<div class="place">
 			<span>位置：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a href="<%=basePath%>admin.jsp">管理员</a></li>
-				<li><a href="#">添加管理员</a></li>
+				<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a href="<%=basePath%>admin.jsp">管理员查找</a></li1>
+				<li1><a href="<%=basePath%>admin/admin_doFind.action">管理员列表</a></li1>
+				<li1><a  style="color:blue;" href="<%=basePath%>adminadd.jsp">管理员添加</a></li1>
+				<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 		<div class="ibox"></div>

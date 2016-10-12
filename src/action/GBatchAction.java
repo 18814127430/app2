@@ -2,7 +2,9 @@ package action;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import service.CompanyService;
 import service.GBatchService;
@@ -14,95 +16,95 @@ import com.opensymphony.xwork2.ActionSupport;
 import bean.Company;
 import bean.GBatch;
 import bean.Goods;
+import utils.goodsTool;
+import utils.msg;
+import utils.test;
 
 public class GBatchAction extends ActionSupport {
-
+	
 	private GBatchService gbatchService;// 业务层对象
 	private GoodsService goodsService;// 业务层对象
 	private CompanyService companyService;// 业务层对象
 	private GBatch gbatch;// 待操作的对象
-	private String keyword;// 界面层需要查询的属性：关键字
+	private String keyword;
 	private int goodsid;
 	private int producerid;
 	private int sellerid;
-	private String gbatchStartDate;
-	private int firstPage;// 显示的第一页
-	private int lastPage;// 显示的最后一页
 	private int currentPage;// 显示的当前页
-	private int totalPage;// 总页数
-	private int totalRecord;// 总记录数
-	private final int RECORD_SIZE = 10;// 每页记录数
-	private final int PAGE_SIZE = 10;// 每组的页数
 	private String deletelist;
-
+	
 	public String beforedoAdd() throws Exception {
-		List companylist = companyService.Find(keyword);
+		List companylist = companyService.Find_All(keyword);
 		ActionContext ctx = ActionContext.getContext();
 		ctx.put("companylist", companylist);
 		ctx.put("goodsid", goodsid);
 		return "gbatchadd_view";
 	}
-
+	
 	public String doAdd() throws Exception {
-		System.out.println(gbatch);
-		System.out.println(producerid);
-		System.out.println(sellerid);
-		System.out.println(goodsid);
+		System.out.println("rec:" + gbatch);
+		System.out.println("rec:" + producerid);
+		System.out.println("rec:" + sellerid);
+		System.out.println("rec:" + goodsid);
+		
 		Company producer = companyService.View(producerid);
 		Company seller = companyService.View(sellerid);
 		Goods goods = goodsService.View(goodsid);
-		System.out.println("56565659");
-		System.out.println(producer);
-		System.out.println(seller);
-		System.out.println(goods);
-
+		
+		System.out.println("rec:" + producer);
+		System.out.println("rec:" + seller);
+		System.out.println("rec:" + goods);
+		
 		gbatch.setGoods(goods);
 		gbatch.setCompanyByProducerId(producer);
 		gbatch.setCompanyBySellerId(seller);
-
-		System.out.println("doAdd要添加的信息:" + gbatch);
-
+		
+		System.out.println("rec:" + "doAdd要添加的信息:" + gbatch);
+		
 		GBatch db_gbatch = gbatchService.Add(gbatch);
-		System.out.println("doAdd添加后的信息:" + db_gbatch);
-
+		
+		System.out.println("rec:" + "doAdd添加后的信息:" + db_gbatch);
+		
 		this.gbatch = db_gbatch;
 		if (db_gbatch != null) {
 			ActionContext ctx = ActionContext.getContext();
 			ctx.put("gbatch", gbatch);
 			return "gbatchinfo_view";
-		} else {
-			ActionContext.getContext().put("errorMsg", gbatchService.getMsg());
+		}
+		else {
+			ActionContext.getContext().put("Msg", gbatchService.getMsg());
 			return "systemerror_view";
 		}
 	}
-
+	
 	public String doDelete() throws Exception {
 		GBatch db_gbatch = gbatchService.View(gbatch.getBatchId());
-		System.out.println("daDelete要删除的信息:" + db_gbatch);
+		System.out.println("rec:" + "daDelete要删除的信息:" + db_gbatch);
 		if (gbatchService.Delete(db_gbatch)) {
 			return (doFind());
-		} else {
-			ActionContext.getContext().put("errorMsg", gbatchService.getMsg());
+		}
+		else {
+			ActionContext.getContext().put("Msg", gbatchService.getMsg());
 			return "systemerror_view";
 		}
 	}
-
+	
 	public String doDeleteAll() throws Exception {
-
+		
 		String[] id = deletelist.split(",");// 用逗号切割
-		System.out.println("用逗号切割");
-		System.out.println(deletelist);
-		System.out.println(currentPage);
-
+		System.out.println("rec:" + "用逗号切割");
+		System.out.println("rec:" + deletelist);
+		System.out.println("rec:" + currentPage);
+		
 		for (int i = 0; i < id.length; i++) {
 			int num = Integer.parseInt(id[i]);
 			GBatch db_gbatch = gbatchService.View(num);
 			gbatchService.Delete(db_gbatch);
 		}
-
+		
 		return (doFind());
 	}
-
+	
 	public String doView() throws Exception {
 		GBatch db_gbatch = gbatchService.View(gbatch.getBatchId());
 		this.gbatch = db_gbatch;
@@ -111,65 +113,104 @@ public class GBatchAction extends ActionSupport {
 			ctx.put("gbatch", gbatch);
 			ctx.put("goodsid", goodsid);
 			return "gbatchinfo_view";
-		} else {
-			ActionContext.getContext().put("errorMsg", gbatchService.getMsg());
+		}
+		else {
+			ActionContext.getContext().put("Msg", gbatchService.getMsg());
 			return "systemerror_view";
 		}
 	}
-
+	
+	public void doAutoAdd() throws Exception {
+		
+		Random r = new Random();
+		int numg = goodsService.Count_Sort_Keyword(0, 0, "");
+		int numc = companyService.Count_Keyword("");
+		for (int i = 0; i < numg; i++) {
+			Goods g = goodsService.View(i + 1);
+			
+			for (int j = 0; j < 4; j++) {
+				int idc1 = r.nextInt(numc) + 1;
+				int idc2 = r.nextInt(numc) + 1;
+				
+				Company c1 = companyService.View(idc1);
+				Company c2 = companyService.View(idc2);
+				
+				GBatch gb = new GBatch();
+				gb.setCompanyByProducerId(c1);
+				gb.setCompanyBySellerId(c2);
+				gb.setDateKeep1(test.String2Timestamp(test.GetCurrentTime()));
+				gb.setDateKeep2(test.String2Timestamp(test.GetCurrentTime()));
+				gb.setDateRec(test.String2Timestamp(test.GetCurrentTime()));
+				gb.setDateSend(test.String2Timestamp(test.GetCurrentTime()));
+				gb.setGoods(g);
+				int stock = r.nextInt(200) + 100;
+				gb.setNumStock(stock);
+				gb.setNumTotal(stock);
+				gb.setProducerSendContent("健康");
+				gb.setSellerReceiveContent("健康");
+				
+				gbatchService.Add(gb);
+			}
+		}
+	}
+	
 	public String doFind() throws Exception {
-		if (totalRecord == 0)
-			totalRecord = 1;
-		if (totalPage == 0)
-			totalPage = 1;
-		if (firstPage == 0)
-			firstPage = 1;
-		if (currentPage == 0)
+		
+		if (goodsid <= 0)
+			goodsid = 0;
+		if (currentPage <= 0)
 			currentPage = 1;
-		if (lastPage == 0)
-			lastPage = 1;
-		if (keyword == null)
+		if (keyword == null || keyword.equals(""))
 			keyword = "";
-
-		System.out.println(keyword);
-
-		totalRecord = gbatchService.GetCount(keyword);
-		System.out.println("59594646" + totalRecord);
-		totalPage = totalRecord / this.RECORD_SIZE + 1;
-		if ((totalRecord % this.RECORD_SIZE == 0) && (totalRecord > this.RECORD_SIZE)) {
+		System.out.println("rec:" + "rec+goodsid:" + goodsid);
+		System.out.println("rec:" + "rec+currentPage:" + currentPage);
+		System.out.println("rec:" + "rec+keyword:" + keyword);
+		
+		int totalRecord = 0;
+		if (goodsid > 0) {
+			totalRecord = gbatchService.Count_GoodsId(goodsid, keyword);
+		}
+		else {
+			totalRecord = gbatchService.Count_Keyword(keyword);
+		}
+		
+		int totalPage = totalRecord / msg.RECORD_SIZE + 1;
+		if ((totalRecord % msg.RECORD_SIZE == 0) && (totalRecord > msg.RECORD_SIZE)) {
 			totalPage--;
 		}
-		if (totalPage < PAGE_SIZE) {
+		currentPage = Math.min(currentPage, totalPage);
+		
+		int firstPage = 1;
+		int lastPage = 1;
+		if (totalPage < msg.PAGE_SIZE) {
 			firstPage = 1;
 			lastPage = totalPage;
-		} else {
-			firstPage = (currentPage / PAGE_SIZE) * PAGE_SIZE + 1;
-			lastPage = firstPage + PAGE_SIZE - 1;
+		}
+		else {
+			firstPage = (currentPage / msg.PAGE_SIZE) * msg.PAGE_SIZE + 1;
+			lastPage = firstPage + msg.PAGE_SIZE - 1;
 			if (lastPage > totalPage) {
 				lastPage = totalPage;
 			}
 		}
-		if (currentPage > totalPage) {
-			System.out.println("currentPage>totalPage");
-		} else {
-			System.out.println("当前页码：" + currentPage + "页码列表：");
-			for (int i = firstPage; i <= lastPage; i++) {
-				System.out.print(i);
-			}
+		
+		int fromIndex = (currentPage - 1) * msg.RECORD_SIZE; // 选择从第几条开始
+		
+		System.out.println("rec:" + "当前页码：totalPage" + totalPage);
+		System.out.println("rec:" + "当前页码：totalRecord" + totalRecord);
+		System.out.println("rec:" + "当前页码：currentPage" + currentPage);
+		System.out.println("rec:" + "当前页码：fromIndex" + fromIndex);
+		System.out.println("rec:" + "当前页码：firstPage" + firstPage);
+		System.out.println("rec:" + "当前页码：lastPage" + lastPage);
+		
+		List list = new ArrayList();
+		if (goodsid > 0) {
+			list = gbatchService.Find_GoodsId(goodsid, keyword, fromIndex, msg.RECORD_SIZE);
 		}
-		int fromIndex = (currentPage - 1) * this.RECORD_SIZE; // 选择从第几条开始
-		int toIndex = Math.min(fromIndex + this.RECORD_SIZE, totalRecord);// 调用Math.min函数取目的数
-
-		System.out.println("当前页码：totalPage" + totalPage);
-		System.out.println("当前页码：totalRecord" + totalRecord);
-		System.out.println("当前页码：currentPage" + currentPage);
-		System.out.println("当前页码：fromIndex" + fromIndex);
-		System.out.println("当前页码：toIndex" + toIndex);
-		System.out.println("当前页码：firstPage" + firstPage);
-		System.out.println("当前页码：lastPage" + lastPage);
-
-		List<?> list = gbatchService.Find(keyword, fromIndex, toIndex - fromIndex);// 可优化
-
+		else {
+			list = gbatchService.Find_Keyword(keyword, fromIndex, msg.RECORD_SIZE);
+		}
+		
 		ActionContext ctx = ActionContext.getContext();
 		ctx.put("list", list);
 		ctx.put("totalRecord", totalRecord);
@@ -177,104 +218,55 @@ public class GBatchAction extends ActionSupport {
 		ctx.put("firstPage", firstPage);
 		ctx.put("currentPage", currentPage);
 		ctx.put("lastPage", lastPage);
-		ctx.put("PAGE_SIZE", PAGE_SIZE);
+		ctx.put("PAGE_SIZE", msg.PAGE_SIZE);
 		ctx.put("keyword", keyword);
+		
+		if (goodsid > 0) {
+			ctx.put("goodsid", goodsid);
+			return "gbatchlistbygoods_view";
+		}
 		return "gbatchlist_view";
 	}
-
-	public String doFindByGoodsId() throws Exception {
-		if (totalRecord == 0)
-			totalRecord = 1;
-		if (totalPage == 0)
-			totalPage = 1;
-		if (firstPage == 0)
-			firstPage = 1;
-		if (currentPage == 0)
-			currentPage = 1;
-		if (lastPage == 0)
-			lastPage = 1;
-		if (keyword == null)
-			keyword = "";
-
-		System.out.println(keyword);
-
-		totalRecord = gbatchService.GetCountByGoodsId(goodsid, keyword);
-		totalPage = totalRecord / this.RECORD_SIZE + 1;
-		if ((totalRecord % this.RECORD_SIZE == 0) && (totalRecord > this.RECORD_SIZE)) {
-			totalPage--;
-		}
-		if (totalPage < PAGE_SIZE) {
-			firstPage = 1;
-			lastPage = totalPage;
-		} else {
-			firstPage = (currentPage / PAGE_SIZE) * PAGE_SIZE + 1;
-			lastPage = firstPage + PAGE_SIZE - 1;
-			if (lastPage > totalPage) {
-				lastPage = totalPage;
-			}
-		}
-		if (currentPage > totalPage) {
-			System.out.println("currentPage>totalPage");
-		} else {
-			System.out.println("当前页码：" + currentPage + "页码列表：");
-			for (int i = firstPage; i <= lastPage; i++) {
-				System.out.print(i);
-			}
-		}
-		int fromIndex = (currentPage - 1) * this.RECORD_SIZE; // 选择从第几条开始
-		int toIndex = Math.min(fromIndex + this.RECORD_SIZE, totalRecord);// 调用Math.min函数取目的数
-		List list = gbatchService.FindByGoodsId(goodsid, keyword, fromIndex, toIndex - fromIndex);
-
-		ActionContext ctx = ActionContext.getContext();
-		ctx.put("list", list);
-		ctx.put("goodsid", goodsid);
-		ctx.put("totalRecord", totalRecord);
-		ctx.put("totalPage", totalPage);
-		ctx.put("firstPage", firstPage);
-		ctx.put("currentPage", currentPage);
-		ctx.put("lastPage", lastPage);
-		ctx.put("PAGE_SIZE", PAGE_SIZE);
-		ctx.put("keyword", keyword);
-		return "gbatchlistbygoods_view";
-	}
-
+	
 	public String doEdit() throws Exception {
-		List companylist = companyService.Find(keyword);
-		System.out.println("doEdit要修改信息的ID：" + gbatch.getBatchId());
+		List companylist = companyService.Find_All(keyword);
+		System.out.println("rec:" + "doEdit要修改信息的ID：" + gbatch.getBatchId());
 		GBatch db_gbatch = gbatchService.View(gbatch.getBatchId());
 		this.gbatch = db_gbatch;
-		System.out.println("doEdit要修改信息：" + gbatch);
-		if (db_gbatch != null) {
+		System.out.println("rec:" + "doEdit要修改信息：" + gbatch);
+		if (gbatch != null) {
 			ActionContext ctx = ActionContext.getContext();
 			ctx.put("companylist", companylist);
 			ctx.put("gbatch", gbatch);
 			return "gbatchedit_view";
-		} else {
-			ActionContext.getContext().put("errorMsg", gbatchService.getMsg());
+		}
+		else {
+			ActionContext.getContext().put("Msg", gbatchService.getMsg());
 			return "systemerror_view";
 		}
 	}
-
+	
 	public String doUpdate() throws Exception {
-		System.out.println("doUpdate要修改的信息:" + gbatch);
-
-		System.out.println(producerid);
-		System.out.println(sellerid);
-		System.out.println(goodsid);
+		System.out.println("rec:" + "doUpdate要修改的信息:" + gbatch);
+		System.out.println("rec:" + producerid);
+		System.out.println("rec:" + sellerid);
+		System.out.println("rec:" + goodsid);
+		
 		Company producer = companyService.View(producerid);
 		Company seller = companyService.View(sellerid);
 		Goods goods = goodsService.View(goodsid);
-		System.out.println("565000000000659");
-		System.out.println(producer);
-		System.out.println(seller);
-		System.out.println(goods);
-
+		
+		System.out.println("rec:" + "====================");
+		System.out.println("rec:" + producer);
+		System.out.println("rec:" + seller);
+		System.out.println("rec:" + goods);
+		
 		gbatch.setGoods(goods);
 		gbatch.setCompanyByProducerId(producer);
 		gbatch.setCompanyBySellerId(seller);
-
-		System.out.println("doAdd要添加的信息:" + gbatch);
-
+		
+		System.out.println("rec:" + "doUpdate要添加的信息:" + gbatch);
+		
 		GBatch db_gbatch = gbatchService.Update(gbatch);
 		this.gbatch = db_gbatch;
 		if (db_gbatch != null) {
@@ -282,161 +274,107 @@ public class GBatchAction extends ActionSupport {
 			ctx.put("gbatch", gbatch);
 			ctx.put("goodsid", goodsid);
 			return "gbatchinfo_view";
-		} else {
-			ActionContext.getContext().put("errorMsg", gbatchService.getMsg());
+		}
+		else {
+			ActionContext.getContext().put("Msg", gbatchService.getMsg());
 			return "systemerror_view";
 		}
 	}
-
+	
 	public GBatchService getGBatchService() {
 		return gbatchService;
 	}
-
+	
 	public void setGBatchService(GBatchService gbatchService) {
 		this.gbatchService = gbatchService;
 	}
-
+	
 	public GBatch getGBatch() {
 		return gbatch;
 	}
-
+	
 	public void setGBatch(GBatch gbatch) {
 		this.gbatch = gbatch;
 	}
-
+	
 	public String getKeyword() {
 		return keyword;
 	}
-
+	
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
-
-	public String getGBatchStartDate() {
-		return gbatchStartDate;
-	}
-
-	public void setGBatchStartDate(String gbatchStartDate) {
-		this.gbatchStartDate = gbatchStartDate;
-	}
-
-	public int getFirstPage() {
-		return firstPage;
-	}
-
-	public void setFirstPage(int firstPage) {
-		this.firstPage = firstPage;
-	}
-
-	public int getLastPage() {
-		return lastPage;
-	}
-
-	public void setLastPage(int lastPage) {
-		this.lastPage = lastPage;
-	}
-
+	
 	public int getCurrentPage() {
 		return currentPage;
 	}
-
+	
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
 	}
-
-	public int getTotalPage() {
-		return totalPage;
-	}
-
-	public void setTotalPage(int totalPage) {
-		this.totalPage = totalPage;
-	}
-
-	public int getTotalRecord() {
-		return totalRecord;
-	}
-
-	public void setTotalRecord(int totalRecord) {
-		this.totalRecord = totalRecord;
-	}
-
-	public int getRECORD_SIZE() {
-		return RECORD_SIZE;
-	}
-
-	public int getPAGE_SIZE() {
-		return PAGE_SIZE;
-	}
-
+	
 	public GBatchService getGbatchService() {
 		return gbatchService;
 	}
-
+	
 	public void setGbatchService(GBatchService gbatchService) {
 		this.gbatchService = gbatchService;
 	}
-
+	
 	public GBatch getGbatch() {
 		return gbatch;
 	}
-
+	
 	public void setGbatch(GBatch gbatch) {
 		this.gbatch = gbatch;
 	}
-
-	public String getGbatchStartDate() {
-		return gbatchStartDate;
-	}
-
-	public void setGbatchStartDate(String gbatchStartDate) {
-		this.gbatchStartDate = gbatchStartDate;
-	}
-
+	
 	public GoodsService getGoodsService() {
 		return goodsService;
 	}
-
+	
 	public void setGoodsService(GoodsService goodsService) {
 		this.goodsService = goodsService;
 	}
-
+	
 	public CompanyService getCompanyService() {
 		return companyService;
 	}
-
+	
 	public void setCompanyService(CompanyService companyService) {
 		this.companyService = companyService;
 	}
-
+	
 	public void setGoodsid(int goodsid) {
 		this.goodsid = goodsid;
 	}
-
+	
 	public int getGoodsid() {
 		return goodsid;
 	}
-
+	
 	public int getProducerid() {
 		return producerid;
 	}
-
+	
 	public void setProducerid(int producerid) {
 		this.producerid = producerid;
 	}
-
+	
 	public int getSellerid() {
 		return sellerid;
 	}
-
+	
 	public void setSellerid(int sellerid) {
 		this.sellerid = sellerid;
 	}
-
+	
 	public String getDeletelist() {
 		return deletelist;
 	}
-
+	
 	public void setDeletelist(String deletelist) {
 		this.deletelist = deletelist;
 	}
+	
 }

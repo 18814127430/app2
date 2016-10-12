@@ -43,14 +43,9 @@
 				<comment>收货人详细地址</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="addressDate" type="java.lang.String">
-			<column length="20" name="addressDate" not-null="true">
+		<property generated="never" lazy="false" name="addressDate" type="java.sql.Timestamp">
+			<column length="0" name="addressDate" not-null="true">
 				<comment>地址添加时间</comment>
-			</column>
-		</property>
-		<property generated="never" lazy="false" name="addressStatus" type="java.lang.String">
-			<column length="20" name="addressStatus" not-null="true">
-				<comment>地址使用状态</comment>
 			</column>
 		</property>
 	</class>

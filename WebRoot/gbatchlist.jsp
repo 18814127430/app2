@@ -21,12 +21,15 @@
 	int  goodsid	=	(Integer)request.getAttribute("goodsid");
 	List<GBatch> list = 	(List<GBatch>)request.getAttribute("list");
 	if (user == null) {
-		response.getWriter().println("<script>top.location.href='" + basePath+ "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>top.location.href='" + basePath+ "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>查看商品批次列表</title>
@@ -68,7 +71,7 @@
  			window.alert("请选择要修改的对象");
 		}else if(flag==1){
 			if(confirm("确定要修改？")){
- 				window.location.href="<%=basePath%>gbatch/gbatch_doEdit.action?gbatch.batchId="+editid+"&goodsid=<%=goodsid%>";
+ 				window.location.href="<%=basePath%>gbatch/gbatch_doEdit.action?gbatch.batchId="+editid+"";
 			}
 		}
  		else{
@@ -93,8 +96,7 @@
 		}
  		else{
  			if(confirm("确定要删除？")){
- 				window.location.href="<%=basePath%>gbatch/gbatch_doDeleteAll.action?deletelist="+deletelist+"&currentPage=<%=currentPage%>&goodsid=<%=goodsid%>
-	";
+ 				window.location.href="<%=basePath%>gbatch/gbatch_doDeleteAll.action?deletelist="+deletelist+"&currentPage=<%=currentPage%>";
 			}
 		}
 	}
@@ -122,13 +124,16 @@
 </head>
 
 <body>
-	<form action="<%=basePath%>gbatch/gbatch_doFind.action?goodsid=<%=goodsid%>" name="gbatchlistForm" id="gbatchlistForm" method="post">
+	<form action="<%=basePath%>gbatch/gbatch_doFind.action" name="gbatchlistForm" id="gbatchlistForm" method="post">
 		<div class="place">
 			<span>位置：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a href="<%=basePath%>gbatch/gbatch_doFind.action" target="rightFrame">商品批次列表</a></li>
-				<li><a href="" target="rightFrame">商品批次查看</a></li>
+				<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a href="<%=basePath%>goods.jsp">商品查找</a></li1>
+				<li1><a href="<%=basePath%>sort/sort_doFind.action">商品分类</a></li1>
+				<li1><a href="<%=basePath%>goods/goods_doFind.action">商品列表</a></li1>
+				<li1><a  style="color:blue;" href="<%=basePath%>gbatch/gbatch_doFind.action" target="rightFrame">所有商品批次</a></li1>
+				<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 
@@ -143,7 +148,8 @@
 
 				<ul class="toolbar1">
 					<li><input type="text" name="keyword" value="<%=keyword%>" placeholder="请输入关键字" class="findinput" /></li>
-					<li><input type=hidden name=currentPage value="1" /></li>
+					<input type=hidden name=currentPage value="1" />
+					<input type=hidden name=goodsid value="<%=goodsid %>" />
 					<li><span onclick="document.getElementById('gbatchlistForm').submit();">search<img src="<%=basePath%>images/t06.png" /></span></li>
 				</ul>
 			</div>
@@ -157,6 +163,7 @@
 						<th>批次编号<i class="sort">
 								<img src="<%=basePath%>images/px.gif" />
 							</i></th>
+						<th>商品名</th>
 						<th>生产商</th>
 						<th>销售商</th>
 						<th>库存</th>
@@ -168,19 +175,20 @@
 
 					<%
 						int startIndex = (currentPage - 1) * PAGE_SIZE;//计算起始序号
-																																for (int i = 0; i < list.size(); i++) {
-																																int currentIndex = startIndex + i + 1; //当前记录的序号
-																																GBatch gbatch = list.get(i); //获取到对象
+						for (int i = 0; i < list.size(); i++) {
+						int currentIndex = startIndex + i + 1; //当前记录的序号
+						GBatch gbatch = list.get(i); //获取到对象
 					%>
 					<tr>
 						<td><input name="check" type="checkbox" value="<%=gbatch.getBatchId()%>"></input></td>
 						<td><div align="center"><%=currentIndex%></div></td>
-						<td><%=gbatch.getBatchId()%></td>
+						<td onclick="javascript:location.href='<%=basePath%>gbatch/gbatch_doView.action?gbatch.batchId=<%=gbatch.getBatchId()%>'"><%=gbatch.getBatchId()%></td>
+						<td><%=gbatch.getGoods().getGoodsName()%></td>
 						<td><%=gbatch.getCompanyByProducerId().getCompanyName()%></td>
 						<td><%=gbatch.getCompanyBySellerId().getCompanyName()%></td>
-						<td><%=gbatch.getBatchNumStock()%>
+						<td><%=gbatch.getNumStock()%>
 							<p>
-								该批数量：<%=gbatch.getBatchNumTotal()%></p></td>
+								该批数量：<%=gbatch.getNumTotal()%></p></td>
 						<td><a href="<%=basePath%>gbatch/gbatch_doView.action?gbatch.batchId=<%=gbatch.getBatchId()%>" style="cursor:hand;" class="tablelink">详情</a> <a
 								href="<%=basePath%>gbatch/gbatch_doDelete.action?gbatch.batchId=<%=gbatch.getBatchId()%>&currentPage=<%=currentPage%>" onClick="return checkDelete()" style="cursor:hand;" class="tablelink1">删除</a></td>
 					</tr>
@@ -203,7 +211,7 @@
 					<%
 						if(firstPage-PAGE_SIZE>=1) {
 					%>
-					<li class="paginItem"><a href="<%=basePath%>gbatch/gbatch_doFind.action?&currentPage=<%=firstPage-PAGE_SIZE%>">
+					<li class="paginItem"><a href="<%=basePath%>gbatch/gbatch_doFind.action?currentPage=<%=firstPage-PAGE_SIZE%>&keyword=<%=keyword%>">
 							<span class="pagepre"></span>
 						</a></li>
 					<%
@@ -212,16 +220,16 @@
 
 					<%
 						for (int i = firstPage; i <=lastPage; i++) {
-																	if(i==currentPage){
+						if(i==currentPage){
 					%>
 
-					<li class="paginItem current"><a href="<%=basePath%>gbatch/gbatch_doFind.action?&currentPage=<%=i%>"><%=i%></a></li>
+					<li class="paginItem current"><a href="<%=basePath%>gbatch/gbatch_doFind.action?currentPage=<%=i%>&keyword=<%=keyword%>"><%=i%></a></li>
 
 					<%
 						continue;}
 					%>
 
-					<li class="paginItem"><a href="<%=basePath%>gbatch/gbatch_doFind.action?&currentPage=<%=i%>"><%=i%></a></li>
+					<li class="paginItem"><a href="<%=basePath%>gbatch/gbatch_doFind.action?currentPage=<%=i%>&keyword=<%=keyword%>"><%=i%></a></li>
 
 					<%
 						}
@@ -229,7 +237,7 @@
 					<%
 						if(lastPage<totalPage){
 					%>
-					<li class="paginItem"><a href="<%=basePath%>gbatch/gbatch_doFind.action?&currentPage=<%=firstPage+PAGE_SIZE%>">
+					<li class="paginItem"><a href="<%=basePath%>gbatch/gbatch_doFind.action?currentPage=<%=firstPage+PAGE_SIZE%>&keyword=<%=keyword%>">
 							<span class="pagenxt"></span>
 						</a></li>
 					<%
@@ -238,6 +246,8 @@
 				</ul>
 			</div>
 		</div>
+		<div class="ibox"></div>
+  		<div class="ibox"></div>
 	</form>
 	<script type="text/javascript">
 		$("#usual1 ul").idTabs();

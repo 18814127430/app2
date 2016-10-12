@@ -23,18 +23,8 @@
 				<comment>商品数量</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="moneyDeliver" type="java.lang.Double">
-			<column name="moneyDeliver" not-null="true" precision="20" scale="4">
-				<comment>商品运费</comment>
-			</column>
-		</property>
-		<property generated="never" lazy="false" name="moneyTotal" type="java.lang.Double">
-			<column name="moneyTotal" not-null="true" precision="20" scale="4">
-				<comment>商品总金额</comment>
-			</column>
-		</property>
-		<property generated="never" lazy="false" name="cartDate" type="java.lang.String">
-			<column length="20" name="cartDate" not-null="true">
+		<property generated="never" lazy="false" name="cartDate" type="java.sql.Timestamp">
+			<column length="0" name="cartDate">
 				<comment>商品添加时间</comment>
 			</column>
 		</property>

@@ -21,6 +21,9 @@
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>商品列表</title>
@@ -109,25 +112,23 @@
 		<div class="place">
 			<span>位置：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a href="<%=basePath%>goods.jsp">商品</a></li>
-				<li><a onClick="history.back(-1)">商品分类</a></li>
-				<li><a href="#">商品列表</a></li>
+				<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a href="<%=basePath%>goods.jsp">商品查找</a></li1>
+				<li1><a href="<%=basePath%>sort/sort_doFind.action">分类列表</a></li1>
+				<li1><a  style="color:blue;" href="<%=basePath%>goods/goods_doFind.action">商品列表</a></li1>
+				<li1><a href="<%=basePath%>goods/goods_beforedoAdd.action" target="rightFrame">添加商品</a></li1>
+				<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 		<div class="rightinfo">
 			<div class="tools">
 				<ul class="toolbar">
-					
-					<li onclick="javascript:location.href='<%=basePath%>goods/goods_beforedoAdd.action'"><span><img src="<%=basePath%>images/t01.png" /></span>添加</li>
 					<li onclick="javascript:edit();"><span><img src="<%=basePath%>images/t02.png" /></span>修改</li>
 					<li onclick="javascript:deleteAll();"><span><img src="<%=basePath%>images/t03.png" /></span>删除</li>
-					<li onclick="history.back(-1);"><span><img src="<%=basePath%>images/t08.png" /></span>返回</li>
-					
 				</ul>
 				<ul class="toolbar1">
 					<li><input type="text" name="keyword" value="<%=keyword%>" placeholder="请输入关键字" class="findinput" /></li>
-					<li><input type=hidden name=currentPage value="1" /></li>
+					<input type=hidden name=currentPage value="1" />
 					<li><span onclick="document.getElementById('goodslistForm').submit();">search<img src="<%=basePath%>images/t06.png" /></span></li>
 				</ul>
 			</div>
@@ -141,6 +142,7 @@
 						<th style="width:40px"><input name="checkall" type="checkbox" value="" onClick="selectAll();" /></th>
 						<th style="width:60px">序号</th>
 						<th>商品ID<i class="sort"><img src="<%=basePath%>images/px.gif" /></i></th>
+						<th>商品图片</th>
 						<th>商品名</th>
 						<th>商品总量</th>
 						<th>商品库存</th>
@@ -161,13 +163,18 @@
 						<td><input name="check" type="checkbox" value="<%=goods.getGoodsId()%>"></input></td>
 						<td><div align="center"><%=currentIndex%></div></td>
 						<td><%=goods.getGoodsId()%></td>
-						<td><%=goods.getGoodsName()%></td>
-						<td><%=goods.getGoodsNumTotal()%></td>
-						<td><%=goods.getGoodsNumStock()%></td>
-						<td><%=goods.getGoodsMoneyRetail()%></td>
-						<td><%=goods.getGoodsCheckSerial()%></td>
+						
+						<td class="imgtd"><a href="<%=basePath%>goods/goods_doView.action?goods.goodsId=<%=goods.getGoodsId()%>" target="rightFrame">
+							<img src="<%=goods.getImg2()%>" height=30px border="0">
+						</a></td>
+						
+						<td onclick="javascript:location.href='<%=basePath%>goods/goods_doView.action?goods.goodsId=<%=goods.getGoodsId()%>'"><%=goods.getGoodsName()%></td>
+						<td><%=goods.getNumTotal()%></td>
+						<td><%=goods.getNumStock()%></td>
+						<td><%=goods.getMoneyNew()%></td>
+						<td><%=goods.getCheckSerial()%></td>
 						<td><a href="<%=basePath%>goods/goods_doView.action?goods.goodsId=<%=goods.getGoodsId()%>" style="cursor:hand;" class="tablelink">详情</a> 
-						<a href="<%=basePath%>gbatch/gbatch_doFindByGoodsId.action?goodsid=<%=goods.getGoodsId()%>" style="cursor:hand;" class="tablelink">批次</a> 
+						<a href="<%=basePath%>gbatch/gbatch_doFind.action?goodsid=<%=goods.getGoodsId()%>" style="cursor:hand;" class="tablelink">批次</a> 
 						<a href="<%=basePath%>goods/goods_doDelete.action?goods.goodsId=<%=goods.getGoodsId()%>&currentPage=<%=currentPage%>" onClick="return checkDelete()" style="cursor:hand;" class="tablelink1">删除</a>
 
 						</td>
@@ -190,7 +197,7 @@
 					<%
 						if(firstPage-PAGE_SIZE>=1) {
 					%>
-					<li class="paginItem"><a href="<%=basePath%>goods/goods_doFind.action?currentPage=<%=firstPage-PAGE_SIZE%>">
+					<li class="paginItem"><a href="<%=basePath%>goods/goods_doFind.action?currentPage=<%=firstPage-PAGE_SIZE%>&keyword=<%=keyword%>">
 							<span class="pagepre"></span>
 						</a></li>
 					<%
@@ -199,16 +206,16 @@
 
 					<%
 						for (int i = firstPage; i <=lastPage; i++) {
-																								if(i==currentPage){
+						if(i==currentPage){
 					%>
 
-					<li class="paginItem current"><a href="<%=basePath%>goods/goods_doFind.action?currentPage=<%=i%>"><%=i%></a></li>
+					<li class="paginItem current"><a href="<%=basePath%>goods/goods_doFind.action?currentPage=<%=i%>&keyword=<%=keyword%>"><%=i%></a></li>
 
 					<%
 						continue;}
 					%>
 
-					<li class="paginItem"><a href="<%=basePath%>goods/goods_doFind.action?currentPage=<%=i%>"><%=i%></a></li>
+					<li class="paginItem"><a href="<%=basePath%>goods/goods_doFind.action?currentPage=<%=i%>&keyword=<%=keyword%>"><%=i%></a></li>
 
 					<%
 						}
@@ -216,7 +223,7 @@
 					<%
 						if(lastPage<totalPage){
 					%>
-					<li class="paginItem"><a href="<%=basePath%>goods/goods_doFind.action?currentPage=<%=firstPage+PAGE_SIZE%>">
+					<li class="paginItem"><a href="<%=basePath%>goods/goods_doFind.action?currentPage=<%=firstPage+PAGE_SIZE%>&keyword=<%=keyword%>">
 							<span class="pagenxt"></span>
 						</a></li>
 					<%

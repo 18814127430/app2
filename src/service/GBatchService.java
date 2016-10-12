@@ -11,80 +11,111 @@ public class GBatchService {
 	private GBatchDAO gbatchDao;
 
 	public GBatch Add(GBatch gbatch) {
-		GBatch result = gbatchDao.merge(gbatch);
-		this.Msg = msg.add_success;
-		return result;
+		GBatch db_gabtch = gbatchDao.merge(gbatch);
+		if (db_gabtch == null) {
+			this.Msg = msg.gbatch_fail;
+			return null;
+		}
+		this.Msg = msg.gbatch_success;
+		return db_gabtch;
 	}
 
 	public boolean Delete(GBatch gbatch) throws Exception {
 		GBatch db_gbatch = gbatchDao.findById(gbatch.getBatchId());
 		if (db_gbatch == null) {
-			this.Msg = msg.delete_fail_id;
-			System.out.println(this.Msg);
+			this.Msg = msg.gbatch_gbatchnull;
 			return false;
 		}
-		gbatchDao.delete(gbatch);
+		gbatchDao.delete(db_gbatch);
+		this.Msg = msg.gbatch_success;
 		return true;
 	}
 
 	public GBatch View(int gbatchID) throws Exception {
 		GBatch db_gbatch = gbatchDao.findById(gbatchID);
 		if (db_gbatch == null) {
-			this.Msg = msg.find_fail_id;
-			System.out.println(this.Msg);
+			this.Msg = msg.gbatch_gbatchnull;
 			return null;
 		}
+		this.Msg = msg.gbatch_success;
 		return db_gbatch;
 	}
 
-	public int GetCount(String keyword) throws Exception {
-		return gbatchDao.getCount(0, 0, 0, keyword);
+	public int Count_Keyword(String keyword) throws Exception {
+		int count = gbatchDao.getCount(0, 0, 0, keyword);
+		this.Msg = msg.gbatch_success;
+		return count;
 	}
 
-	public List Find(String keyword, int start, int length) throws Exception {
+	public List Find_Keyword(String keyword, int start, int length) throws Exception {
 		List list = gbatchDao.findAll(0, 0, 0, keyword, start, length);
-		System.out.println("5859294:" + list.size());
+		this.Msg = msg.gbatch_success;
 		return list;
 	}
 
-	public int GetCountByGoodsId(int goodsid, String keyword) throws Exception {
-		return gbatchDao.getCount(0, 0, goodsid, keyword);
+	public int Count_GoodsId(int goodsid, String keyword) throws Exception {
+		int count = gbatchDao.getCount(0, 0, goodsid, keyword);
+		this.Msg = msg.gbatch_success;
+		return count;
 	}
 
-	public List FindByGoodsId(int goodsid, String keyword, int start, int length) throws Exception {
+	public List Find_GoodsId(int goodsid, String keyword, int start, int length) throws Exception {
 		List list = gbatchDao.findAll(0, 0, goodsid, keyword, start, length);
+		this.Msg = msg.gbatch_success;
 		return list;
 	}
 
-	public int GetCountByProducerId(int producerid, String keyword) throws Exception {
-		return gbatchDao.getCount(producerid, 0, 0, keyword);
+	public int Count_ProducerId(int producerid, String keyword) throws Exception {
+		int count = gbatchDao.getCount(producerid, 0, 0, keyword);
+		this.Msg = msg.gbatch_success;
+		return count;
 	}
 
-	public List FindByProducerId(int producerid, String keyword, int start, int length) throws Exception {
+	public List Find_ProducerId(int producerid, String keyword, int start, int length) throws Exception {
 
 		List list = gbatchDao.findAll(producerid, 0, 0, keyword, start, length);
+		this.Msg = msg.gbatch_success;
 		return list;
 	}
 
-	public int GetCountBySellerId(int sellerid, String keyword) throws Exception {
-		return gbatchDao.getCount(0, sellerid, 0, keyword);
+	public int Count_SellerId(int sellerid, String keyword) throws Exception {
+		int count = gbatchDao.getCount(0, sellerid, 0, keyword);
+		this.Msg = msg.gbatch_success;
+		return count;
 	}
 
-	public List FindBySellerId(int sellerid, String keyword, int start, int length) throws Exception {
+	public List Find_SellerId(int sellerid, String keyword, int start, int length) throws Exception {
 
 		List list = gbatchDao.findAll(0, sellerid, 0, keyword, start, length);
+		this.Msg = msg.gbatch_success;
 		return list;
+	}
+
+	/**
+	 * @param num
+	 * @param goodsid
+	 * @return
+	 * @throws Exception
+	 */
+	public GBatch findByQuatifyDateKeep(int num, int goodsid) throws Exception {
+		GBatch db_gbatch = gbatchDao.findByQuatifyDateKeep(num, goodsid);
+		if (db_gbatch == null) {
+			this.Msg = msg.gbatch_gbatchnull;
+			return null;
+		}
+		this.Msg = msg.gbatch_success;
+		return db_gbatch;
 	}
 
 	public GBatch Update(GBatch gbatch) throws Exception {
 		GBatch db_gbatch = gbatchDao.findById(gbatch.getBatchId());
 		if (db_gbatch == null) {
-			this.Msg = msg.update_fail_id;
-			System.out.println(this.Msg);
+			this.Msg = msg.gbatch_gbatchnull;
 			return null;
 		}
-		GBatch result = gbatchDao.merge(gbatch);
-		return result;
+		db_gbatch = gbatchDao.merge(gbatch);
+		this.Msg = msg.gbatch_success;
+		return db_gbatch;
 	}
 
 	public String getMsg() {

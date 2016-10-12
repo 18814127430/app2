@@ -1,5 +1,7 @@
 package bean;
 
+import java.sql.Timestamp;
+
 /**
  * Logs entity. @author MyEclipse Persistence Tools
  */
@@ -9,7 +11,7 @@ public class Logs implements java.io.Serializable {
 	// Fields
 
 	private Integer logsId;
-	private String logsDate;
+	private Timestamp logsDate;
 	private String logsContent;
 
 	// Constructors
@@ -19,12 +21,12 @@ public class Logs implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Logs(String logsDate) {
+	public Logs(Timestamp logsDate) {
 		this.logsDate = logsDate;
 	}
 
 	/** full constructor */
-	public Logs(String logsDate, String logsContent) {
+	public Logs(Timestamp logsDate, String logsContent) {
 		this.logsDate = logsDate;
 		this.logsContent = logsContent;
 	}
@@ -39,11 +41,11 @@ public class Logs implements java.io.Serializable {
 		this.logsId = logsId;
 	}
 
-	public String getLogsDate() {
+	public Timestamp getLogsDate() {
 		return this.logsDate;
 	}
 
-	public void setLogsDate(String logsDate) {
+	public void setLogsDate(Timestamp logsDate) {
 		this.logsDate = logsDate;
 	}
 
@@ -53,6 +55,11 @@ public class Logs implements java.io.Serializable {
 
 	public void setLogsContent(String logsContent) {
 		this.logsContent = logsContent;
+	}
+
+	@Override
+	public String toString() {
+		return "Logs [logsId=" + logsId + ", logsDate=" + logsDate + ", logsContent=" + logsContent + "]";
 	}
 
 }

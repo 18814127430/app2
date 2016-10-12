@@ -8,12 +8,15 @@
 	CAddress caddress = (CAddress) request.getAttribute("caddress");
 	Object user = session.getAttribute("user");
 	if (user == null) {
-		response.getWriter().println("<script>window.top.location.href='" + basePath + "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>window.top.location.href='" + basePath + "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>查看地址</title>
@@ -34,9 +37,16 @@
 	<div class="place">
 		<span>位置：</span>
 		<ul class="placeul">
-			<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-			<li><a onClick="history.back(-1)">上一级</a></li>
-			<li><a href="#">地址详情</a></li>
+			<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+			<li1><a href="<%=basePath%>customer/customer_doFind.action">顾客列表</a></li1>
+			<li1><a href="<%=basePath%>customer/customer_doView.action?customerid=<%=caddress.getCustomer().getCustomerId()%>">顾客信息</a></li1>
+			<li1><a href="<%=basePath%>caddress/caddress_doFind.action?customerid=<%=caddress.getCustomer().getCustomerId()%>">地址列表</a></li1>
+			<li1><a style="color:blue;" href="<%=basePath%>caddress/caddress_doView.action?caddress.addressId=<%=caddress.getAddressId()%>">地址详情</a></li1>
+			<li1><a href="<%=basePath%>oorder/oorder_doFind.action?customerid=<%=caddress.getCustomer().getCustomerId()%>">订单列表</a></li1>
+			<li1><a href="<%=basePath%>cart/cart_doFind.action?customerid=<%=caddress.getCustomer().getCustomerId()%>">购物车列表</a></li1>
+			<li1><a href="<%=basePath%>collect/collect_doFind.action?customerid=<%=caddress.getCustomer().getCustomerId()%>">收藏列表</a></li1>
+			<li1><a href="<%=basePath%>comment/comment_doFind.action?customerid=<%=caddress.getCustomer().getCustomerId()%>">评论列表</a></li1>
+			<li1><a onClick="history.back(-1)">返回</a></li1>
 		</ul>
 	</div>
 
@@ -45,28 +55,20 @@
 			<span>查看地址</span>
 		</div>
 
-		<ul class="forminfo">
-			<li><label>顾客ID</label> <input value="<%=caddress.getCustomer().getCustomerId()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>顾客电话</label> <input value="<%=caddress.getCustomer().getCustomerPhone()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>顾客邮箱</label> <input value="<%=caddress.getCustomer().getCustomerMail()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>地址ID</label> <input value="<%=caddress.getAddressId()%>" style="width:320px" readonly type="text" class="dfinput1" /></li>
-			<li><label>收货人</label> <input value="<%=caddress.getAddressName()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>电话</label> <input value="<%=caddress.getAddressPhone()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>省份</label> <input value="<%=caddress.getAddressProvince()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>城市</label> <input value="<%=caddress.getAddressCity()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>街道</label> <input value="<%=caddress.getAddressStreet()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>状态</label> <input value="<%=caddress.getAddressStatus()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>添加时间</label> <input value="<%=caddress.getAddressDate()%>" style="width:320px;" readonly type="text" class="dfinput1" /></li>
-			<li><label>地址详情</label> <textarea class="textinput" readonly style="margin-left:0px;height:80px;"><%=caddress.getAddressDetial()%></textarea></li>
-			<div class="ibox"></div>
-			<li><label>&nbsp;</label> <input name="" type="button" class="btn" value="返回" onClick="history.back(-1)" /></li>
+		<ul class="forminfo" >
+			<li><label>顾客 ID<b>*</b></label> <input value="<%=caddress.getCustomer().getCustomerId()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>顾客账号<b>*</b></label> <input value="<%=caddress.getCustomer().getCustomerPhone()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>顾客邮箱<b>*</b></label> <input value="<%=caddress.getCustomer().getCustomerMail()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>地址 ID<b>*</b></label> <input value="<%=caddress.getAddressId()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>收货姓名<b>*</b></label> <input value="<%=caddress.getAddressName()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>收货电话<b>*</b></label> <input value="<%=caddress.getAddressPhone()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>收货省份<b>*</b></label> <input value="<%=caddress.getAddressProvince()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>收货城市<b>*</b></label> <input value="<%=caddress.getAddressCity()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>收货街道<b>*</b></label> <input value="<%=caddress.getAddressStreet()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>添加时间<b>*</b></label> <input value="<%=caddress.getAddressDate()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
+			<li><label>地址详情<b>*</b></label> <input value="<%=caddress.getAddressDetial()%>" style="width:320px;padding-left:15px;" readonly type="text" class="dfinput1" /></li>
 		</ul>
 
 	</div>
-	</div>
-	</div>
-	<div class="ibox"></div>
-	<div class="ibox"></div>
-	<div class="ibox"></div>
 </body>
 </html>

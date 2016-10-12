@@ -19,12 +19,14 @@ public class Customer implements java.io.Serializable {
 	private String customerCode;
 	private String customerToken;
 	private String customerArray;
+	private String thirdType1;
+	private String thirdAccount1;
+	private String thirdType2;
+	private String thirdAccount2;
 	private Set collects = new HashSet(0);
-	private Set carts = new HashSet(0);
-	private Set CWordses = new HashSet(0);
 	private Set orders = new HashSet(0);
+	private Set carts = new HashSet(0);
 	private Set CAddresses = new HashSet(0);
-	private Set comments = new HashSet(0);
 
 	// Constructors
 
@@ -33,18 +35,14 @@ public class Customer implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Customer(String customerPhone, String customerPassword, String customerMail, String customerImg, String customerCode, String customerToken) {
+	public Customer(String customerPhone) {
 		this.customerPhone = customerPhone;
-		this.customerPassword = customerPassword;
-		this.customerMail = customerMail;
-		this.customerImg = customerImg;
-		this.customerCode = customerCode;
-		this.customerToken = customerToken;
 	}
 
 	/** full constructor */
 	public Customer(String customerPhone, String customerPassword, String customerMail, String customerImg, String customerCode,
-			String customerToken, String customerArray, Set collects, Set carts, Set CWordses, Set orders, Set CAddresses, Set comments) {
+			String customerToken, String customerArray, String thirdType1, String thirdAccount1, String thirdType2, String thirdAccount2,
+			Set collects, Set orders, Set carts, Set CAddresses) {
 		this.customerPhone = customerPhone;
 		this.customerPassword = customerPassword;
 		this.customerMail = customerMail;
@@ -52,12 +50,14 @@ public class Customer implements java.io.Serializable {
 		this.customerCode = customerCode;
 		this.customerToken = customerToken;
 		this.customerArray = customerArray;
+		this.thirdType1 = thirdType1;
+		this.thirdAccount1 = thirdAccount1;
+		this.thirdType2 = thirdType2;
+		this.thirdAccount2 = thirdAccount2;
 		this.collects = collects;
-		this.carts = carts;
-		this.CWordses = CWordses;
 		this.orders = orders;
+		this.carts = carts;
 		this.CAddresses = CAddresses;
-		this.comments = comments;
 	}
 
 	// Property accessors
@@ -126,28 +126,44 @@ public class Customer implements java.io.Serializable {
 		this.customerArray = customerArray;
 	}
 
+	public String getThirdType1() {
+		return this.thirdType1;
+	}
+
+	public void setThirdType1(String thirdType1) {
+		this.thirdType1 = thirdType1;
+	}
+
+	public String getThirdAccount1() {
+		return this.thirdAccount1;
+	}
+
+	public void setThirdAccount1(String thirdAccount1) {
+		this.thirdAccount1 = thirdAccount1;
+	}
+
+	public String getThirdType2() {
+		return this.thirdType2;
+	}
+
+	public void setThirdType2(String thirdType2) {
+		this.thirdType2 = thirdType2;
+	}
+
+	public String getThirdAccount2() {
+		return this.thirdAccount2;
+	}
+
+	public void setThirdAccount2(String thirdAccount2) {
+		this.thirdAccount2 = thirdAccount2;
+	}
+
 	public Set getCollects() {
 		return this.collects;
 	}
 
 	public void setCollects(Set collects) {
 		this.collects = collects;
-	}
-
-	public Set getCarts() {
-		return this.carts;
-	}
-
-	public void setCarts(Set carts) {
-		this.carts = carts;
-	}
-
-	public Set getCWordses() {
-		return this.CWordses;
-	}
-
-	public void setCWordses(Set CWordses) {
-		this.CWordses = CWordses;
 	}
 
 	public Set getOrders() {
@@ -158,6 +174,14 @@ public class Customer implements java.io.Serializable {
 		this.orders = orders;
 	}
 
+	public Set getCarts() {
+		return this.carts;
+	}
+
+	public void setCarts(Set carts) {
+		this.carts = carts;
+	}
+
 	public Set getCAddresses() {
 		return this.CAddresses;
 	}
@@ -166,19 +190,12 @@ public class Customer implements java.io.Serializable {
 		this.CAddresses = CAddresses;
 	}
 
-	public Set getComments() {
-		return this.comments;
-	}
-
-	public void setComments(Set comments) {
-		this.comments = comments;
-	}
-
 	@Override
 	public String toString() {
 		return "Customer [customerId=" + customerId + ", customerPhone=" + customerPhone + ", customerPassword=" + customerPassword
 				+ ", customerMail=" + customerMail + ", customerImg=" + customerImg + ", customerCode=" + customerCode + ", customerToken="
-				+ customerToken + ", customerArray=" + customerArray + "]";
+				+ customerToken + ", customerArray=" + customerArray + ", thirdType1=" + thirdType1 + ", thirdAccount1=" + thirdAccount1
+				+ ", thirdType2=" + thirdType2 + ", thirdAccount2=" + thirdAccount2 + "]";
 	}
 
 }

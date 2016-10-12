@@ -23,54 +23,59 @@
 				<comment>商品关键字</comment>
 			</column>
 		</property>
+		<property generated="never" lazy="false" name="goodsTags" type="java.lang.String">
+			<column length="250" name="goodsTags">
+				<comment>商品标签</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="goodsRemark" type="java.lang.String">
+			<column length="250" name="goodsRemark">
+				<comment>商品备注</comment>
+			</column>
+		</property>
 		<property generated="never" lazy="false" name="goodsDescription" type="java.lang.String">
 			<column name="goodsDescription">
 				<comment>商品描述</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsWeight" type="java.lang.String">
-			<column length="20" name="goodsWeight" not-null="true">
-				<comment>商品重量</comment>
+		<property generated="never" lazy="false" name="goodsAddDate" type="java.sql.Timestamp">
+			<column length="0" name="goodsAddDate">
+				<comment>商品添加时间</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsRemark" type="java.lang.String">
-			<column length="250" name="goodsRemark" not-null="true">
-				<comment>商品备注</comment>
+		<property generated="never" lazy="false" name="goodsHtmlUrl" type="java.lang.String">
+			<column length="250" name="goodsHtmlUrl">
+				<comment>商品HTML的URL地址</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsNumTotal" type="java.lang.Integer">
-			<column name="goodsNumTotal" not-null="true">
+		<property generated="never" lazy="false" name="numTotal" type="java.lang.Integer">
+			<column name="numTotal" not-null="true">
 				<comment>商品总数量</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsNumStock" type="java.lang.Integer">
-			<column name="goodsNumStock" not-null="true">
+		<property generated="never" lazy="false" name="numStock" type="java.lang.Integer">
+			<column name="numStock" not-null="true">
 				<comment>商品库存</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsMoneyEntry" type="java.lang.Double">
-			<column name="goodsMoneyEntry" not-null="true" precision="20" scale="4">
-				<comment>商品进货价</comment>
+		<property generated="never" lazy="false" name="moneyOld" type="java.lang.Double">
+			<column name="moneyOld" not-null="true" precision="10" scale="2">
+				<comment>商品之前零售价（用于优惠活动）</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsMoneyRetail" type="java.lang.Double">
-			<column name="goodsMoneyRetail" not-null="true" precision="20" scale="4">
-				<comment>商品零售价</comment>
+		<property generated="never" lazy="false" name="moneyNew" type="java.lang.Double">
+			<column name="moneyNew" not-null="true" precision="10" scale="2">
+				<comment>商品最新零售价（用于优惠活动）</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsMoneyDeliver" type="java.lang.Double">
-			<column name="goodsMoneyDeliver" not-null="true" precision="20" scale="4">
+		<property generated="never" lazy="false" name="moneyDeliver" type="java.lang.Double">
+			<column name="moneyDeliver" not-null="true" precision="10" scale="2">
 				<comment>商品运费</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsSize1" type="java.lang.String">
-			<column length="20" name="goodsSize1" not-null="true">
-				<comment>商品包装规格大</comment>
-			</column>
-		</property>
-		<property generated="never" lazy="false" name="goodsSize2" type="java.lang.String">
-			<column length="20" name="goodsSize2" not-null="true">
-				<comment>商品包装规格小</comment>
+		<property generated="never" lazy="false" name="moneyLeast" type="java.lang.Double">
+			<column name="moneyLeast" not-null="true" precision="10" scale="2">
+				<comment>商品运费(满x元包邮)</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="goodsUnits" type="java.lang.String">
@@ -78,69 +83,159 @@
 				<comment>商品计量单位</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsCheckDate" type="java.lang.String">
-			<column length="20" name="goodsCheckDate" not-null="true">
-				<comment>商品检验日期</comment>
+		<property generated="never" lazy="false" name="goodsSize1" type="java.lang.String">
+			<column length="20" name="goodsSize1">
+				<comment>商品包装规格大</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsCheckDepartment" type="java.lang.String">
-			<column length="250" name="goodsCheckDepartment" not-null="true">
+		<property generated="never" lazy="false" name="goodsSize2" type="java.lang.String">
+			<column length="20" name="goodsSize2">
+				<comment>商品包装规格小</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="goodsWeight" type="java.lang.String">
+			<column length="20" name="goodsWeight">
+				<comment>商品重量</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="checkDepartment" type="java.lang.String">
+			<column length="250" name="checkDepartment">
 				<comment>商品检验部门</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsCheckSerial" type="java.lang.String">
-			<column length="250" name="goodsCheckSerial" not-null="true">
+		<property generated="never" lazy="false" name="checkDate" type="java.lang.String">
+			<column length="20" name="checkDate">
+				<comment>商品检验日期</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="checkSerial" type="java.lang.String">
+			<column length="250" name="checkSerial">
 				<comment>商品检验序列号</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="goodsCheckResult" type="java.lang.String">
-			<column length="250" name="goodsCheckResult" not-null="true">
+		<property generated="never" lazy="false" name="checkResult" type="java.lang.String">
+			<column length="250" name="checkResult">
 				<comment>商品检验结果</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img1" type="java.lang.String">
-			<column length="250" name="img1" not-null="true">
-				<comment>商品图片1</comment>
+			<column length="250" name="img1">
+				<comment>商品图片1：轮播图：pic_banner 750*320</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img2" type="java.lang.String">
-			<column length="250" name="img2" not-null="true">
-				<comment>商品图片2</comment>
+			<column length="250" name="img2">
+				<comment>商品图片2：新品上市及热销榜单：pic_home_first_grid 120*120</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img3" type="java.lang.String">
-			<column length="250" name="img3" not-null="true">
-				<comment>商品图片3</comment>
+			<column length="250" name="img3">
+				<comment>商品图片3：分类左中图：pic_home_second_left 470*590</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img4" type="java.lang.String">
-			<column length="250" name="img4" not-null="true">
-				<comment>商品图片4</comment>
+			<column length="250" name="img4">
+				<comment>商品图片4：分类右上图：pic_home_second_right_top 590*300</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img5" type="java.lang.String">
-			<column length="250" name="img5" not-null="true">
-				<comment>商品图片5</comment>
+			<column length="250" name="img5">
+				<comment>商品图片5：分类右下图：pic_home_second_bottom_top 590*300</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img6" type="java.lang.String">
-			<column length="250" name="img6" not-null="true">
-				<comment>商品图片6</comment>
+			<column length="250" name="img6">
+				<comment>商品图片6：详情页：pic_gooddetail 750*750</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img7" type="java.lang.String">
-			<column length="250" name="img7" not-null="true">
-				<comment>商品图片7</comment>
+			<column length="250" name="img7">
+				<comment>商品图片7：搜索二级页面：pic_sec_good 390*390</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img8" type="java.lang.String">
-			<column length="250" name="img8" not-null="true">
-				<comment>商品图片8</comment>
+			<column length="250" name="img8">
+				<comment>商品图片8：购物车(收藏):pic_item_good 200*200</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="img9" type="java.lang.String">
-			<column length="250" name="img9" not-null="true">
+			<column length="250" name="img9">
 				<comment>商品图片9</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="img10" type="java.lang.String">
+			<column length="250" name="img10">
+				<comment>商品图片10</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="img11" type="java.lang.String">
+			<column length="250" name="img11">
+				<comment>商品图片11</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="img12" type="java.lang.String">
+			<column length="250" name="img12">
+				<comment>商品图片12</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="img13" type="java.lang.String">
+			<column length="250" name="img13">
+				<comment>商品图片13</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="img14" type="java.lang.String">
+			<column length="250" name="img14">
+				<comment>商品图片14</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="img15" type="java.lang.String">
+			<column length="250" name="img15">
+				<comment>商品图片15</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="img16" type="java.lang.String">
+			<column length="250" name="img16">
+				<comment>商品图片16</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="countCollect" type="java.lang.Integer">
+			<column name="countCollect">
+				<comment>加入收藏的数量</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="countCart" type="java.lang.Integer">
+			<column name="countCart">
+				<comment>加入购物车的数量</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="countOrder" type="java.lang.Integer">
+			<column name="countOrder">
+				<comment>加入订单的数量</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="commentStar1" type="java.lang.Integer">
+			<column name="commentStar1">
+				<comment>1星评价</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="commentStar2" type="java.lang.Integer">
+			<column name="commentStar2">
+				<comment>2星评价</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="commentStar3" type="java.lang.Integer">
+			<column name="commentStar3">
+				<comment>3星评价</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="commentStar4" type="java.lang.Integer">
+			<column name="commentStar4">
+				<comment>4星评价</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="commentStar5" type="java.lang.Integer">
+			<column name="commentStar5">
+				<comment>5星评价</comment>
 			</column>
 		</property>
 	</class>

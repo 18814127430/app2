@@ -193,12 +193,11 @@ public class Company implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "Company [companyId=" + companyId + ", companyName=" + companyName + ", companyType=" + companyType + ", companyPhone=" + companyPhone
-				+ ", companyPostCode=" + companyPostCode + ", companyFax=" + companyFax + ", companyUrl=" + companyUrl + ", companyProvince="
-				+ companyProvince + ", companyCity=" + companyCity + ", companyStress=" + companyStress + ", companyDetial=" + companyDetial
-				+ ", companyIntroduction=" + companyIntroduction + ", companyStatus=" + companyStatus + "]";
+		return "Company [companyId=" + companyId + ", companyName=" + companyName + ", companyType=" + companyType
+				+ ", companyPhone=" + companyPhone + ", companyPostCode=" + companyPostCode + ", companyFax=" + companyFax
+				+ ", companyUrl=" + companyUrl + ", companyProvince=" + companyProvince + ", companyCity=" + companyCity
+				+ ", companyStress=" + companyStress + ", companyDetial=" + companyDetial + ", companyIntroduction="
+				+ companyIntroduction + ", companyStatus=" + companyStatus + "]";
 	}
-
-
 
 }

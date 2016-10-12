@@ -9,12 +9,15 @@
 	List<Sort> list = 	(List<Sort>)request.getAttribute("list");
 	Object user = session.getAttribute("user");
 	if (user == null) {
-		response.getWriter().println("<script>top.location.href='" + basePath+ "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>top.location.href='" + basePath+ "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>添加类别</title>
@@ -95,11 +98,14 @@
 <body>
 	<form action="<%=basePath%>sort/sort_doAdd.action" method="post" onsubmit="return checkForm();" enctype="multipart/form-data" name="form1">
 		<div class="place">
-			<span>位置：</span>
+			<span>Goto：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a onClick="history.back(-1)">类别列表</a></li>
-				<li><a href="#">类别添加</a></li>
+				<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a href="<%=basePath%>goods.jsp">商品查找</a></li1>
+				<li1><a href="<%=basePath%>sort/sort_doFind.action">分类列表</a></li1>
+				<li1><a href="<%=basePath%>goods/goods_doFind.action">商品列表</a></li1>
+				<li1><a  style="color:blue;" href="#">类别添加</a></li1>
+				<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 		<div class="ibox"></div>

@@ -23,34 +23,39 @@
 				<comment>生产商ID</comment>
 			</column>
 		</many-to-one>
-		<property generated="never" lazy="false" name="batchNumTotal" type="java.lang.Integer">
-			<column name="batchNumTotal" not-null="true">
+		<property generated="never" lazy="false" name="numTotal" type="java.lang.Integer">
+			<column name="numTotal" not-null="true">
 				<comment>批次总数量</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="batchNumStock" type="java.lang.Integer">
-			<column name="batchNumStock" not-null="true">
+		<property generated="never" lazy="false" name="numStock" type="java.lang.Integer">
+			<column name="numStock" not-null="true">
 				<comment>批次库存</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="batchDateKeep" type="java.lang.String">
-			<column length="20" name="batchDateKeep" not-null="true">
-				<comment>批次保质期</comment>
+		<property generated="never" lazy="false" name="dateKeep1" type="java.sql.Timestamp">
+			<column length="0" name="dateKeep1">
+				<comment>保质期开始时间</comment>
 			</column>
 		</property>
-		<property generated="never" lazy="false" name="producerSendDate" type="java.lang.String">
-			<column length="20" name="producerSendDate" not-null="true">
+		<property generated="never" lazy="false" name="dateKeep2" type="java.sql.Timestamp">
+			<column length="0" name="dateKeep2">
+				<comment>保质期结束时间</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="dateSend" type="java.sql.Timestamp">
+			<column length="0" name="dateSend">
 				<comment>生产商发货时间</comment>
+			</column>
+		</property>
+		<property generated="never" lazy="false" name="dateRec" type="java.sql.Timestamp">
+			<column length="0" name="dateRec">
+				<comment>销售商收货时间</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="producerSendContent" type="java.lang.String">
 			<column name="producerSendContent">
 				<comment>生产商发货内容</comment>
-			</column>
-		</property>
-		<property generated="never" lazy="false" name="sellerReceiveDate" type="java.lang.String">
-			<column length="20" name="sellerReceiveDate" not-null="true">
-				<comment>销售商收货时间</comment>
 			</column>
 		</property>
 		<property generated="never" lazy="false" name="sellerReceiveContent" type="java.lang.String">

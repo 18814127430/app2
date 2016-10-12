@@ -48,9 +48,14 @@
 				<comment>等级，一般，高级</comment>
 			</column>
 		</property>
-		<property name="adminStartDate" type="java.lang.String">
-			<column name="adminStartDate" length="20" not-null="true">
+		<property name="adminStartDate" type="java.sql.Timestamp">
+			<column name="adminStartDate" length="0">
 				<comment>开始使用时间</comment>
+			</column>
+		</property>
+		<property name="adminDates" type="java.lang.String">
+			<column name="adminDates">
+				<comment>时间记录表</comment>
 			</column>
 		</property>
 	</class>

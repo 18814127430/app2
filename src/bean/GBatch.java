@@ -1,5 +1,6 @@
 package bean;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,12 +16,13 @@ public class GBatch implements java.io.Serializable {
 	private Goods goods;
 	private Company companyBySellerId;
 	private Company companyByProducerId;
-	private Integer batchNumTotal;
-	private Integer batchNumStock;
-	private String batchDateKeep;
-	private String producerSendDate;
+	private Integer numTotal;
+	private Integer numStock;
+	private Timestamp dateKeep1;
+	private Timestamp dateKeep2;
+	private Timestamp dateSend;
+	private Timestamp dateRec;
 	private String producerSendContent;
-	private String sellerReceiveDate;
 	private String sellerReceiveContent;
 	private Set OInfos = new HashSet(0);
 
@@ -31,28 +33,25 @@ public class GBatch implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public GBatch(Goods goods, Integer batchNumTotal, Integer batchNumStock, String batchDateKeep, String producerSendDate, String sellerReceiveDate) {
+	public GBatch(Goods goods, Integer numTotal, Integer numStock) {
 		this.goods = goods;
-		this.batchNumTotal = batchNumTotal;
-		this.batchNumStock = batchNumStock;
-		this.batchDateKeep = batchDateKeep;
-		this.producerSendDate = producerSendDate;
-		this.sellerReceiveDate = sellerReceiveDate;
+		this.numTotal = numTotal;
+		this.numStock = numStock;
 	}
 
 	/** full constructor */
-	public GBatch(Goods goods, Company companyBySellerId, Company companyByProducerId, Integer batchNumTotal, Integer batchNumStock,
-			String batchDateKeep, String producerSendDate, String producerSendContent, String sellerReceiveDate, String sellerReceiveContent,
-			Set OInfos) {
+	public GBatch(Goods goods, Company companyBySellerId, Company companyByProducerId, Integer numTotal, Integer numStock, Timestamp dateKeep1,
+			Timestamp dateKeep2, Timestamp dateSend, Timestamp dateRec, String producerSendContent, String sellerReceiveContent, Set OInfos) {
 		this.goods = goods;
 		this.companyBySellerId = companyBySellerId;
 		this.companyByProducerId = companyByProducerId;
-		this.batchNumTotal = batchNumTotal;
-		this.batchNumStock = batchNumStock;
-		this.batchDateKeep = batchDateKeep;
-		this.producerSendDate = producerSendDate;
+		this.numTotal = numTotal;
+		this.numStock = numStock;
+		this.dateKeep1 = dateKeep1;
+		this.dateKeep2 = dateKeep2;
+		this.dateSend = dateSend;
+		this.dateRec = dateRec;
 		this.producerSendContent = producerSendContent;
-		this.sellerReceiveDate = sellerReceiveDate;
 		this.sellerReceiveContent = sellerReceiveContent;
 		this.OInfos = OInfos;
 	}
@@ -91,36 +90,52 @@ public class GBatch implements java.io.Serializable {
 		this.companyByProducerId = companyByProducerId;
 	}
 
-	public Integer getBatchNumTotal() {
-		return this.batchNumTotal;
+	public Integer getNumTotal() {
+		return this.numTotal;
 	}
 
-	public void setBatchNumTotal(Integer batchNumTotal) {
-		this.batchNumTotal = batchNumTotal;
+	public void setNumTotal(Integer numTotal) {
+		this.numTotal = numTotal;
 	}
 
-	public Integer getBatchNumStock() {
-		return this.batchNumStock;
+	public Integer getNumStock() {
+		return this.numStock;
 	}
 
-	public void setBatchNumStock(Integer batchNumStock) {
-		this.batchNumStock = batchNumStock;
+	public void setNumStock(Integer numStock) {
+		this.numStock = numStock;
 	}
 
-	public String getBatchDateKeep() {
-		return this.batchDateKeep;
+	public Timestamp getDateKeep1() {
+		return this.dateKeep1;
 	}
 
-	public void setBatchDateKeep(String batchDateKeep) {
-		this.batchDateKeep = batchDateKeep;
+	public void setDateKeep1(Timestamp dateKeep1) {
+		this.dateKeep1 = dateKeep1;
 	}
 
-	public String getProducerSendDate() {
-		return this.producerSendDate;
+	public Timestamp getDateKeep2() {
+		return this.dateKeep2;
 	}
 
-	public void setProducerSendDate(String producerSendDate) {
-		this.producerSendDate = producerSendDate;
+	public void setDateKeep2(Timestamp dateKeep2) {
+		this.dateKeep2 = dateKeep2;
+	}
+
+	public Timestamp getDateSend() {
+		return this.dateSend;
+	}
+
+	public void setDateSend(Timestamp dateSend) {
+		this.dateSend = dateSend;
+	}
+
+	public Timestamp getDateRec() {
+		return this.dateRec;
+	}
+
+	public void setDateRec(Timestamp dateRec) {
+		this.dateRec = dateRec;
 	}
 
 	public String getProducerSendContent() {
@@ -129,14 +144,6 @@ public class GBatch implements java.io.Serializable {
 
 	public void setProducerSendContent(String producerSendContent) {
 		this.producerSendContent = producerSendContent;
-	}
-
-	public String getSellerReceiveDate() {
-		return this.sellerReceiveDate;
-	}
-
-	public void setSellerReceiveDate(String sellerReceiveDate) {
-		this.sellerReceiveDate = sellerReceiveDate;
 	}
 
 	public String getSellerReceiveContent() {
@@ -157,9 +164,9 @@ public class GBatch implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "GBatch [batchId=" + batchId + ", batchNumTotal=" + batchNumTotal + ", batchNumStock=" + batchNumStock + ", batchDateKeep="
-				+ batchDateKeep + ", producerSendDate=" + producerSendDate + ", producerSendContent=" + producerSendContent + ", sellerReceiveDate="
-				+ sellerReceiveDate + ", sellerReceiveContent=" + sellerReceiveContent + "]";
+		return "GBatch [batchId=" + batchId + ", numTotal=" + numTotal + ", numStock=" + numStock + ", dateKeep1=" + dateKeep1 + ", dateKeep2="
+				+ dateKeep2 + ", dateSend=" + dateSend + ", dateRec=" + dateRec + ", producerSendContent=" + producerSendContent
+				+ ", sellerReceiveContent=" + sellerReceiveContent + "]";
 	}
 
 }

@@ -16,11 +16,14 @@
     int PAGE_SIZE	=	(Integer)request.getAttribute("PAGE_SIZE");  //一共多少记录
     Object user		=	session.getAttribute("user");
     if(user==null){
-        response.getWriter().println("<script>top.location.href='" + basePath + "admin/admin_doLogin.action';</script>");
+        response.getWriter().println("<script>top.location.href='" + basePath + "';</script>");
     }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>收藏列表</title>
@@ -37,21 +40,21 @@
 		<div class="place">
 			<span>位置：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a href="<%=basePath%>customer.jsp">顾客</a></li>
-				<li><a href="<%=basePath%>customer/customer_doFind.action">顾客列表</a></li>
-				<li><a onClick="history.back(-1)">顾客信息</a></li>
-				<li><a href="#">收藏列表</a></li>
+			<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+			<li1><a href="<%=basePath%>customer/customer_doFind.action">顾客列表</a></li1>
+			<li1><a href="<%=basePath%>customer/customer_doView.action?customerid=<%=customerid%>">顾客信息</a></li1>
+			<li1><a href="<%=basePath%>caddress/caddress_doFind.action?customerid=<%=customerid%>">地址列表</a></li1>
+			<li1><a href="<%=basePath%>oorder/oorder_doFind.action?customerid=<%=customerid%>">订单列表</a></li1>
+			<li1><a href="<%=basePath%>cart/cart_doFind.action?customerid=<%=customerid%>">购物车列表</a></li1>
+			<li1><a style="color:blue;" href="<%=basePath%>collect/collect_doFind.action?customerid=<%=customerid%>">收藏列表</a></li1>
+			<li1><a href="<%=basePath%>comment/comment_doFind.action?customerid=<%=customerid%>">评论列表</a></li1>
+			<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 
 		<div class="rightinfo">
 			<div class="tools">
 			
-				<ul class="toolbar">
-					<li onclick="history.back(-1);"><span><img src="<%=basePath%>images/t08.png" /></span>返回</li>
-				</ul>
-				
 				<ul class="toolbar1">
 					<li><input type="text" name="keyword" value="<%=keyword%>" placeholder="请输入关键字" class="findinput" /></li>
 					<input type=hidden name=currentPage value="1" />
@@ -82,7 +85,7 @@
 												int currentIndex = startIndex + i + 1; //当前记录的序号
 												Collect collect = list.get(i); //获取到对象
 					%>
-					<tr>
+					<tr onclick="javascript:location.href='<%=basePath%>collect/collect_doView.action?collect.collectId=<%=collect.getCollectId()%>'">
 						<td><div align="center"><%=currentIndex%></div></td>
 						<td><%=collect.getCollectId()%></td>
 						<td><%=collect.getCustomer().getCustomerPhone()%></td>
@@ -110,7 +113,7 @@
 					<%
 						if(firstPage-PAGE_SIZE>=1) {
 					%>
-					<li class="paginItem"><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customerid%>&currentPage=<%=firstPage-PAGE_SIZE%>">
+					<li class="paginItem"><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customerid%>&currentPage=<%=firstPage-PAGE_SIZE%>&keyword=<%=keyword%>">
 							<span class="pagepre"></span>
 						</a></li>
 					<%
@@ -119,19 +122,19 @@
 												if(i==currentPage){
 					%>
 
-					<li class="paginItem current"><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customerid%>&currentPage=<%=i%>"><%=i%></a></li>
+					<li class="paginItem current"><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customerid%>&currentPage=<%=i%>&keyword=<%=keyword%>"><%=i%></a></li>
 					<%
 						continue;}
 					%>
 
-					<li class="paginItem"><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customerid%>&currentPage=<%=i%>"><%=i%></a></li>
+					<li class="paginItem"><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customerid%>&currentPage=<%=i%>&keyword=<%=keyword%>"><%=i%></a></li>
 					<%
 						}
 					%>
 					<%
 						if(lastPage<totalPage){
 					%>
-					<li class="paginItem"><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customerid%>&currentPage=<%=firstPage+PAGE_SIZE%>">
+					<li class="paginItem"><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customerid%>&currentPage=<%=firstPage+PAGE_SIZE%>&keyword=<%=keyword%>">
 							<span class="pagenxt"></span>
 						</a></li>
 					<%

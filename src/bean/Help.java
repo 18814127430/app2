@@ -1,5 +1,7 @@
 package bean;
 
+import java.sql.Timestamp;
+
 /**
  * Help entity. @author MyEclipse Persistence Tools
  */
@@ -11,7 +13,7 @@ public class Help implements java.io.Serializable {
 	private Integer helpId;
 	private String helpTitle;
 	private String helpKeyWord;
-	private String helpDate;
+	private Timestamp helpDate;
 	private String helpContext;
 
 	// Constructors
@@ -21,14 +23,14 @@ public class Help implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Help(String helpTitle, String helpKeyWord, String helpDate) {
+	public Help(String helpTitle, String helpKeyWord, Timestamp helpDate) {
 		this.helpTitle = helpTitle;
 		this.helpKeyWord = helpKeyWord;
 		this.helpDate = helpDate;
 	}
 
 	/** full constructor */
-	public Help(String helpTitle, String helpKeyWord, String helpDate, String helpContext) {
+	public Help(String helpTitle, String helpKeyWord, Timestamp helpDate, String helpContext) {
 		this.helpTitle = helpTitle;
 		this.helpKeyWord = helpKeyWord;
 		this.helpDate = helpDate;
@@ -61,11 +63,11 @@ public class Help implements java.io.Serializable {
 		this.helpKeyWord = helpKeyWord;
 	}
 
-	public String getHelpDate() {
+	public Timestamp getHelpDate() {
 		return this.helpDate;
 	}
 
-	public void setHelpDate(String helpDate) {
+	public void setHelpDate(Timestamp helpDate) {
 		this.helpDate = helpDate;
 	}
 
@@ -75,6 +77,12 @@ public class Help implements java.io.Serializable {
 
 	public void setHelpContext(String helpContext) {
 		this.helpContext = helpContext;
+	}
+
+	@Override
+	public String toString() {
+		return "Help [helpId=" + helpId + ", helpTitle=" + helpTitle + ", helpKeyWord=" + helpKeyWord + ", helpDate=" + helpDate + ", helpContext="
+				+ helpContext + "]";
 	}
 
 }

@@ -1,5 +1,7 @@
 package bean;
 
+import java.sql.Timestamp;
+
 /**
  * Comment entity. @author MyEclipse Persistence Tools
  */
@@ -10,10 +12,10 @@ public class Comment implements java.io.Serializable {
 
 	private Integer commentId;
 	private OInfo OInfo;
-	private String commentStars;
+	private Integer commentStar;
+	private Integer commentCount;
 	private String commentContent;
-	private Integer commentNum;
-	private String commentDate;
+	private Timestamp commentDate;
 
 	// Constructors
 
@@ -21,12 +23,17 @@ public class Comment implements java.io.Serializable {
 	public Comment() {
 	}
 
-	/** full constructor */
-	public Comment(OInfo OInfo, String commentStars, String commentContent, Integer commentNum, String commentDate) {
+	/** minimal constructor */
+	public Comment(OInfo OInfo) {
 		this.OInfo = OInfo;
-		this.commentStars = commentStars;
+	}
+
+	/** full constructor */
+	public Comment(OInfo OInfo, Integer commentStar, Integer commentCount, String commentContent, Timestamp commentDate) {
+		this.OInfo = OInfo;
+		this.commentStar = commentStar;
+		this.commentCount = commentCount;
 		this.commentContent = commentContent;
-		this.commentNum = commentNum;
 		this.commentDate = commentDate;
 	}
 
@@ -48,12 +55,20 @@ public class Comment implements java.io.Serializable {
 		this.OInfo = OInfo;
 	}
 
-	public String getCommentStars() {
-		return this.commentStars;
+	public Integer getCommentStar() {
+		return this.commentStar;
 	}
 
-	public void setCommentStars(String commentStars) {
-		this.commentStars = commentStars;
+	public void setCommentStar(Integer commentStar) {
+		this.commentStar = commentStar;
+	}
+
+	public Integer getCommentCount() {
+		return this.commentCount;
+	}
+
+	public void setCommentCount(Integer commentCount) {
+		this.commentCount = commentCount;
 	}
 
 	public String getCommentContent() {
@@ -64,26 +79,18 @@ public class Comment implements java.io.Serializable {
 		this.commentContent = commentContent;
 	}
 
-	public Integer getCommentNum() {
-		return this.commentNum;
-	}
-
-	public void setCommentNum(Integer commentNum) {
-		this.commentNum = commentNum;
-	}
-
-	public String getCommentDate() {
+	public Timestamp getCommentDate() {
 		return this.commentDate;
 	}
 
-	public void setCommentDate(String commentDate) {
+	public void setCommentDate(Timestamp commentDate) {
 		this.commentDate = commentDate;
 	}
 
 	@Override
 	public String toString() {
-		return "Comment [commentId=" + commentId + ", OInfo=" + OInfo + ", commentStars=" + commentStars + ", commentContent=" + commentContent
-				+ ", commentNum=" + commentNum + ", commentDate=" + commentDate + "]";
+		return "Comment [commentId=" + commentId + ", OInfo=" + OInfo.getOinfoId() + ", commentStar=" + commentStar + ", commentCount=" + commentCount
+				+ ", commentContent=" + commentContent + ", commentDate=" + commentDate + "]";
 	}
 
 }

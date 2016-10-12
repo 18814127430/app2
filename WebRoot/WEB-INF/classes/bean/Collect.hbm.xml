@@ -18,8 +18,8 @@
 				<comment>客户ID</comment>
 			</column>
 		</many-to-one>
-		<property generated="never" lazy="false" name="collectDate" type="java.lang.String">
-			<column length="20" name="collectDate" not-null="true">
+		<property generated="never" lazy="false" name="collectDate" type="java.sql.Timestamp">
+			<column length="0" name="collectDate">
 				<comment>收藏添加日期</comment>
 			</column>
 		</property>

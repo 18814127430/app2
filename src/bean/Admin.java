@@ -1,5 +1,6 @@
 package bean;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +21,8 @@ public class Admin implements java.io.Serializable {
 	private String adminRegion;
 	private String adminImg;
 	private String adminClass;
-	private String adminStartDate;
+	private Timestamp adminStartDate;
+	private String adminDates;
 	private Set CWordses = new HashSet(0);
 
 	// Constructors
@@ -31,7 +33,7 @@ public class Admin implements java.io.Serializable {
 
 	/** minimal constructor */
 	public Admin(String adminAccount, String adminPassword, String adminName, String adminPhone, String adminMail, String adminRegion,
-			String adminImg, String adminClass, String adminStartDate) {
+			String adminImg, String adminClass, Timestamp adminStartDate) {
 		this.adminAccount = adminAccount;
 		this.adminPassword = adminPassword;
 		this.adminName = adminName;
@@ -45,7 +47,7 @@ public class Admin implements java.io.Serializable {
 
 	/** full constructor */
 	public Admin(String adminAccount, String adminPassword, String adminName, String adminPhone, String adminMail, String adminRegion,
-			String adminImg, String adminClass, String adminStartDate, Set CWordses) {
+			String adminImg, String adminClass, Timestamp adminStartDate, String adminDates, Set CWordses) {
 		this.adminAccount = adminAccount;
 		this.adminPassword = adminPassword;
 		this.adminName = adminName;
@@ -55,6 +57,7 @@ public class Admin implements java.io.Serializable {
 		this.adminImg = adminImg;
 		this.adminClass = adminClass;
 		this.adminStartDate = adminStartDate;
+		this.adminDates = adminDates;
 		this.CWordses = CWordses;
 	}
 
@@ -132,12 +135,20 @@ public class Admin implements java.io.Serializable {
 		this.adminClass = adminClass;
 	}
 
-	public String getAdminStartDate() {
+	public Timestamp getAdminStartDate() {
 		return this.adminStartDate;
 	}
 
-	public void setAdminStartDate(String adminStartDate) {
+	public void setAdminStartDate(Timestamp adminStartDate) {
 		this.adminStartDate = adminStartDate;
+	}
+
+	public String getAdminDates() {
+		return this.adminDates;
+	}
+
+	public void setAdminDates(String adminDates) {
+		this.adminDates = adminDates;
 	}
 
 	public Set getCWordses() {
@@ -152,7 +163,7 @@ public class Admin implements java.io.Serializable {
 	public String toString() {
 		return "Admin [adminId=" + adminId + ", adminAccount=" + adminAccount + ", adminPassword=" + adminPassword + ", adminName=" + adminName
 				+ ", adminPhone=" + adminPhone + ", adminMail=" + adminMail + ", adminRegion=" + adminRegion + ", adminImg=" + adminImg
-				+ ", adminClass=" + adminClass + ", adminStartDate=" + adminStartDate + "]";
+				+ ", adminClass=" + adminClass + ", adminStartDate=" + adminStartDate + ", adminDates=" + adminDates + "]";
 	}
 
 }

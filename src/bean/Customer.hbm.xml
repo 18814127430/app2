@@ -14,33 +14,53 @@
 			</column>
 		</property>
 		<property name="customerPassword" type="java.lang.String">
-			<column name="customerPassword" length="50" not-null="true">
+			<column name="customerPassword" length="50">
 				<comment>顾客密码</comment>
 			</column>
 		</property>
 		<property name="customerMail" type="java.lang.String">
-			<column name="customerMail" length="50" not-null="true">
+			<column name="customerMail" length="50">
 				<comment>顾客邮箱</comment>
 			</column>
 		</property>
 		<property name="customerImg" type="java.lang.String">
-			<column name="customerImg" length="250" not-null="true">
+			<column name="customerImg" length="250">
 				<comment>顾客头像</comment>
 			</column>
 		</property>
 		<property name="customerCode" type="java.lang.String">
-			<column name="customerCode" length="10" not-null="true">
+			<column name="customerCode" length="10">
 				<comment>顾客验证码</comment>
 			</column>
 		</property>
 		<property name="customerToken" type="java.lang.String">
-			<column name="customerToken" length="250" not-null="true" unique="true">
+			<column name="customerToken" length="250">
 				<comment>顾客令牌</comment>
 			</column>
 		</property>
 		<property name="customerArray" type="java.lang.String">
 			<column name="customerArray">
 				<comment>记录用户登录时间的数组</comment>
+			</column>
+		</property>
+		<property name="thirdType1" type="java.lang.String">
+			<column name="thirdType1" length="250">
+				<comment>第三方登录类型1</comment>
+			</column>
+		</property>
+		<property name="thirdAccount1" type="java.lang.String">
+			<column name="thirdAccount1" length="250">
+				<comment>第三方登录账号1</comment>
+			</column>
+		</property>
+		<property name="thirdType2" type="java.lang.String">
+			<column name="thirdType2" length="250">
+				<comment>第三方登录类型2</comment>
+			</column>
+		</property>
+		<property name="thirdAccount2" type="java.lang.String">
+			<column name="thirdAccount2" length="250">
+				<comment>第三方登录账号2</comment>
 			</column>
 		</property>
 	</class>

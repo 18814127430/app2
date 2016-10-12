@@ -14,58 +14,70 @@ import org.apache.struts2.ServletActionContext;
 
 import service.PushService;
 import utils.msg;
+import utils.test;
 
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
 
+import androidbeans.a_Push;
+import bean.Push;
+import bean.Customer;
 import bean.Push;
 
 public class PushServlet extends ActionSupport {
 
 	private PushService pushService;// 业务层对象
-	private final int RECORD_SIZE = 10;// 每页记录数
-	private final int PAGE_SIZE = 10;// 每组的页数
-	
-	private Gson gson = new Gson();
-	private Map<String, String> map = new HashMap<String, String>();
-	private String json = "";
-	private String responsemsg = "";
-	private String mapjson = "";
+
+	public a_Push push2a(Push db_push) {
+		a_Push a_push = new a_Push();
+
+		a_push.setPushContext(db_push.getPushContext());
+		a_push.setPushId(db_push.getPushId());
+		a_push.setPushUrl(db_push.getPushUrl());
+
+		return a_push;
+	}
 
 	public void doView() throws Exception {
 
+		Gson gson = new Gson();
+		Map<String, Object> map = new HashMap<String, Object>();
+		String status = "";
+		String message = "";
+		String data = "";
+		int page = 0;
+		String mapdata = "";
+
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
+		response.setContentType("application/data; charset=utf-8");
 		PrintWriter out = response.getWriter();
 
 		HttpServletRequest request = ServletActionContext.getRequest();
 		request.setCharacterEncoding("UTF-8");
 		int pushid = Integer.parseInt(request.getParameter("id"));
 
-		Push object = pushService.View(pushid);
+		Push db_push = pushService.View(pushid);
 
 		System.out.println("------->pushid:" + pushid);
-		System.out.println("------->object:" + object);
+		System.out.println("------->object:" + db_push);
 
-		if (object == null) {
-			responsemsg = msg.fail;
-			map.put("responsemsg", responsemsg);
-			mapjson = gson.toJson(map);
-
-			out.write(mapjson);
-			out.flush();
-			out.close();
-			return;
+		if (db_push == null) {
+			status = msg.status_1;
+			map.put("status", status);
+			map.put("message", message);
+		} else {
+			message = msg.push_success;
+			status = msg.status_1;
+			map.put("status", status);
+			map.put("message", message);
+			data = gson.toJson(db_push);
+			map.put("data", data);
 		}
 
-		json = gson.toJson(object);
-		responsemsg = msg.success;
-		map.put("json", json);
-		map.put("responsemsg", responsemsg);
-		mapjson = gson.toJson(map);
+		mapdata = gson.toJson(map);
 
-		out.write(mapjson);
+		out.write(mapdata);
 		out.flush();
 		out.close();
 		return;
@@ -73,32 +85,43 @@ public class PushServlet extends ActionSupport {
 
 	public void doFind() throws Exception {
 
+		Gson gson = new Gson();
+		Map<String, Object> map = new HashMap<String, Object>();
+		String status = "";
+		String message = "";
+		String data = "";
+		int page = 0;
+		String mapdata = "";
+
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json; charset=utf-8");
+		response.setContentType("application/data; charset=utf-8");
 		PrintWriter out = response.getWriter();
 
 		HttpServletRequest request = ServletActionContext.getRequest();
 		request.setCharacterEncoding("UTF-8");
 		int currentPage = Integer.parseInt(request.getParameter("page"));
-		String keyword = request.getParameter("wd");
+		String keyword = new String(request.getParameter("kw").getBytes("iso-8859-1"), "utf-8");
 
 		if (keyword == null || keyword == "")
 			keyword = "";
 
 		int firstPage = 1;
 		int lastPage = 1;
-		int totalRecord = pushService.GetCount(keyword);
-		int totalPage = totalRecord / this.RECORD_SIZE + 1;
-		if ((totalRecord % this.RECORD_SIZE == 0) && (totalRecord > this.RECORD_SIZE)) {
+		int totalRecord = pushService.Count_Keyword(keyword);
+		int totalPage = totalRecord / msg.RECORD_SIZE + 1;
+		if ((totalRecord % msg.RECORD_SIZE == 0) && (totalRecord > msg.RECORD_SIZE)) {
 			totalPage--;
 		}
-		if (totalPage < PAGE_SIZE) {
+		if (currentPage > totalPage) {
+			currentPage = 1;
+		}
+		if (totalPage < msg.PAGE_SIZE) {
 			firstPage = 1;
 			lastPage = totalPage;
 		} else {
-			firstPage = (currentPage / PAGE_SIZE) * PAGE_SIZE + 1;
-			lastPage = firstPage + PAGE_SIZE - 1;
+			firstPage = (currentPage / msg.PAGE_SIZE) * msg.PAGE_SIZE + 1;
+			lastPage = firstPage + msg.PAGE_SIZE - 1;
 			if (lastPage > totalPage) {
 				lastPage = totalPage;
 			}
@@ -111,8 +134,8 @@ public class PushServlet extends ActionSupport {
 				System.out.print(i);
 			}
 		}
-		int fromIndex = (currentPage - 1) * this.RECORD_SIZE; // 选择从第几条开始
-		int toIndex = Math.min(fromIndex + this.RECORD_SIZE, totalRecord);// 调用Math.min函数取目的数
+		int fromIndex = (currentPage - 1) * msg.RECORD_SIZE; // 选择从第几条开始
+		int toIndex = Math.min(fromIndex + msg.RECORD_SIZE, totalRecord);// 调用Math.min函数取目的数
 
 		System.out.println("当前页码：totalPage" + totalPage);
 		System.out.println("当前页码：totalRecord" + totalRecord);
@@ -122,32 +145,38 @@ public class PushServlet extends ActionSupport {
 		System.out.println("当前页码：firstPage" + firstPage);
 		System.out.println("当前页码：lastPage" + lastPage);
 
-		List<?> list = pushService.Find(keyword, fromIndex, toIndex - fromIndex);// 可优化
+		List<?> list = pushService.Find_Keyword(keyword, fromIndex, msg.RECORD_SIZE);// 可优化
 		if (list.size() == 0) {
-			responsemsg = msg.fail;
-			map.put("responsemsg", responsemsg);
-			mapjson = gson.toJson(map);
+			message = msg.push_pushnull;
+			status = msg.status_1;
+			map.put("status", status);
+			map.put("message", message);
+			mapdata = gson.toJson(map);
 
-			out.write(mapjson);
+			out.write(mapdata);
 			out.flush();
 			out.close();
 			return;
+		} else {
+			message = msg.push_success;
+			status = msg.status_1;
+			map.put("status", status);
+			map.put("message", message);
+			data = gson.toJson(list);
+			map.put("data", data);map.put("page", totalPage);
 		}
 
-		json = gson.toJson(list);
-		responsemsg = msg.success;
-		map.put("json", json);
-		map.put("responsemsg", responsemsg);
-		map.put("totalPage", Integer.toString(totalPage));
-		map.put("totalRecord", Integer.toString(totalRecord));
-		map.put("currentPage", Integer.toString(currentPage));
-		map.put("fromIndex", Integer.toString(fromIndex));
-		map.put("toIndex", Integer.toString(toIndex));
-		map.put("firstPage", Integer.toString(firstPage));
-		map.put("lastPage", Integer.toString(lastPage));
-		mapjson = gson.toJson(map);
+		// map.put("totalPage", Integer.toString(totalPage));
+		// map.put("totalRecord", Integer.toString(totalRecord));
+		// map.put("currentPage", Integer.toString(currentPage));
+		// map.put("fromIndex", Integer.toString(fromIndex));
+		// map.put("toIndex", Integer.toString(toIndex));
+		// map.put("firstPage", Integer.toString(firstPage));
+		// map.put("lastPage", Integer.toString(lastPage));
 
-		out.write(mapjson);
+		mapdata = gson.toJson(map);
+
+		out.write(mapdata);
 		out.flush();
 		out.close();
 		return;

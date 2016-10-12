@@ -7,25 +7,21 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
 	Customer customer = (Customer) request.getAttribute("customer");
-	request.setAttribute("customer", customer);
 	String[] list1 = customer.getCustomerArray().split(",");
 	int size = list1.length;
 	Object user = session.getAttribute("user");
 	if (user == null) {
-		response.getWriter()
-				.println(
-						"<script>window.top.location.href='"
-								+ basePath
-								+ "customer/customer_doLogin.action';</script>");
+		response.getWriter().println("<script>window.top.location.href='"+ basePath+ "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>客户信息详情查看</title>
@@ -58,27 +54,24 @@
 </head>
 
 <body>
-	<div class="formbody">
-
-		<div id="usual1" name="usual1" class="usual">
-			<div class="itab">
-				<ul>
-					<li><a href="<%=basePath%>customer/customer_doFind.action">顾客列表</a></li>
-					<li><a href="tab3" class="selected">顾客信息详情</a></li>
-					<li><a href="<%=basePath%>caddress/caddress_doFindByCustomerId.action?customerid=<%=customer.getCustomerId()%>">地址列表</a></li>
-					<li><a href="<%=basePath%>order/order_doFindByCustomerId.action?customerid=<%=customer.getCustomerId()%>">订单列表</a></li>
-					<li><a href="<%=basePath%>cart/cart_doFindByCustomerId.action?customerid=<%=customer.getCustomerId()%>">购物车列表</a></li>
-					<li><a href="<%=basePath%>collect/collect_doFindByCustomerId.action?customerid=<%=customer.getCustomerId()%>">收藏列表</a></li>
-					<li><a href="<%=basePath%>cwords/cwords_doFindByCustomerId.action?customerid=<%=customer.getCustomerId()%>">留言列表</a></li>
-				</ul>
-			</div>
-		</div>
+	<div class="place">
+		<span>位置:</span>
+		<ul class="placeul">
+			<li1><a href="<%=basePath%>customer/customer_doFind.action">顾客列表</a></li1>
+			<li1><a style="color:blue;" href="<%=basePath%>customer/customer_doView.action?customerid=<%=customer.getCustomerId()%>">顾客详情</a></li1>
+			<li1><a href="<%=basePath%>caddress/caddress_doFind.action?customerid=<%=customer.getCustomerId()%>">地址列表</a></li1>
+			<li1><a href="<%=basePath%>oorder/oorder_doFind.action?customerid=<%=customer.getCustomerId()%>">订单列表</a></li1>
+			<li1><a href="<%=basePath%>cart/cart_doFind.action?customerid=<%=customer.getCustomerId()%>">购物车列表</a></li1>
+			<li1><a href="<%=basePath%>collect/collect_doFind.action?customerid=<%=customer.getCustomerId()%>">收藏列表</a></li1>
+			<li1><a href="<%=basePath%>comment/comment_doFind.action?customerid=<%=customer.getCustomerId()%>">评论列表</a></li1>
+			<li1><a onClick="history.back(-1)">返回</a></li1>
+		</ul>
 	</div>
 
 	<div id="tab3" class="tabson">
-	
+
 		<div class="ibox"></div>
-		
+
 		<div class="MID" style="HEIGHT: 220PX;">
 			<div class="MID1" style="HEIGHT: 220PX;">
 				<ul class="forminfo">
@@ -107,17 +100,15 @@
 			<a></a>
 		</div>
 		<div class="tiplog">
-			<ul class="forminfo">
-				<li></li>
-				<%
-					for (int j = 0; j < size; j++) {
-				%>
-				<li><%=list1[j]%></li>
-				<%
-					}
-				%>
-			</ul>
-
+			<textarea class="textarea" readonly="readonly" style="font-size: 15px;color: #046DA9;font-family:微软雅黑;">
+		<%
+			for (int j = 0; j < size; j++) {
+		%>
+		<%=list1[j]%>
+		<%
+			}
+		%>
+		</textarea>
 		</div>
 	</div>
 </body>

@@ -1,12 +1,12 @@
 package action;
 
-import java.io.File;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.struts2.ServletActionContext;
 
 import service.CompanyService;
 import service.GoodsService;
@@ -15,34 +15,29 @@ import service.SortService;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-import bean.Admin;
-import bean.CAddress;
 import bean.Goods;
 import bean.Sort;
+import utils.goodsTool;
+import utils.msg;
+import utils.test;
 
 public class GoodsAction extends ActionSupport {
-
+	
 	private GoodsService goodsService;// 业务层对象
 	private CompanyService companyService;// 业务层对象
 	private SortService sortService;// 业务层对象
-	private Goods goods;// 待操作的对象
-	private String keyword;// 界面层需要查询的属性：关键字
-	private int sortid;// 界面层需要查询的属性：关键字
-	private int producerid;// 界面层需要查询的属性：关键字
-	private int sellerid;// 界面层需要查询的属性：关键字
-	private String goodsStartDate;
-	private int firstPage;// 显示的第一页
-	private int lastPage;// 显示的最后一页
-	private int currentPage;// 显示的当前页
-	private int totalPage;// 总页数
-	private int totalRecord;// 总记录数
-	private final int RECORD_SIZE = 10;// 每页记录数
-	private final int PAGE_SIZE = 10;// 每组的页数
+	private Goods goods;
+	private String keyword;
+	private int sortid;
+	private int producerid;
+	private int sellerid;
+	private int currentPage;
 	private String deletelist;
-
+	private String oldhtmlurl;
+	
 	public String beforedoAdd() throws Exception {
-
-		List<?> list = sortService.Find();
+		
+		List<?> list = sortService.Find_All();
 		List parentlist = new ArrayList();
 		List sortlist = new ArrayList();
 		for (int i = 0; i < list.size(); i++) {
@@ -53,178 +48,249 @@ public class GoodsAction extends ActionSupport {
 		}
 		for (int i = 0; i < parentlist.size(); i++) {
 			Sort sort = (Sort) parentlist.get(i);
-			List childlist = sortService.FindBySortId(sort.getSortId());
+			List childlist = sortService.Find_SortId(sort.getSortId());
 			Set<Sort> set = new HashSet<Sort>(childlist);
 			sort.setSorts(set);
 			sortlist.add(sort);
 		}
-
+		
 		for (int i = 0; i < sortlist.size(); i++) {
 			Sort sort = (Sort) sortlist.get(i);
-			System.out.println("father:" + sort);
-
+			test.a("father:" + sort.getSortName());
+			
 			Set sortSet = sort.getSorts();
 			Iterator iterator1 = sortSet.iterator();
 			int j = 0;
 			while (iterator1.hasNext()) {
 				Sort sort1 = (Sort) iterator1.next();
 				j++;
-				System.out.println("children: " + sort1);
+				test.a("               children: " + sort1.getSortName());
 			}
 		}
-
-		List companylist = companyService.Find(keyword);
-
-		// Sort[][] array = new Sort[sortlist.size()][];
-		// for (int i = 0; i < array.length; i++) {
-		// Sort sort = (Sort) sortlist.get(i);
-		// System.out.println("00parent" + i + ":" + sort.getSortName());
-		// Set sortSet = sort.getSorts();
-		// Iterator iterator1 = sortSet.iterator();
-		// int j = 0;
-		// while (iterator1.hasNext()) {
-		// Sort childrensort = (Sort) iterator1.next();
-		// System.out.println("010children" + j + ":" +
-		// childrensort.getSortName());
-		// array[i][j] = childrensort;
-		// System.out.println("00children" + j + ":" +
-		// childrensort.getSortName());
-		// j++;
-		// }
-		// }
-		//
-		// for (int i = 0; i < array.length; i++) {
-		// Sort sort = (Sort) sortlist.get(i);
-		// System.out.println("11parent" + i + ":" + sort.getSortName());
-		// for (int j = 0; j < array[i].length; j++) {
-		// System.out.println("11children" + j + ":" +
-		// array[i][j].getSortName());
-		// }
-		// }
-
+		
+		List companylist = companyService.Find_All(keyword);
+		
 		ActionContext ctx = ActionContext.getContext();
 		ctx.put("sortlist", sortlist);
 		ctx.put("companylist", companylist);
+		ctx.put("time", test.GetCurrentTime());
 		return "goodsadd_view";
 	}
-
+	
 	public String doAdd() throws Exception {
-		System.out.println("doAdd要添加的信息:" + goods);
-		System.out.println("doAdd要添加的sortid信息:" + sortid);
-		System.out.println("doAdd要添加的producerid信息:" + producerid);
-		System.out.println("doAdd要添加的sellerid信息:" + sellerid);
-		Sort sort = sortService.FindById(sortid);
+		test.a("doAdd要添加的sortid信息:" + sortid);
+		test.a("doAdd要添加的producerid信息:" + producerid);
+		test.a("doAdd要添加的sellerid信息:" + sellerid);
+		test.a("doAdd要添加的getImg1信息:" + goods.getImg1());
+		test.a("doAdd要添加的getImg2信息:" + goods.getImg2());
+		test.a("doAdd要添加的getImg3信息:" + goods.getImg3());
+		test.a("doAdd要添加的getImg4信息:" + goods.getImg4());
+		test.a("doAdd要添加的getImg5信息:" + goods.getImg5());
+		test.a("doAdd要添加的getImg6信息:" + goods.getImg6());
+		test.a("doAdd要添加的getImg7信息:" + goods.getImg7());
+		test.a("doAdd要添加的getImg8信息:" + goods.getImg8());
+		test.a("doAdd要添加的getImg9信息:" + goods.getImg9());
+		test.a("doAdd要添加的getImg10信息:" + goods.getImg10());
+		test.a("doAdd要添加的getImg11信息:" + goods.getImg11());
+		test.a("doAdd要添加的getImg12信息:" + goods.getImg12());
+		test.a("doAdd要添加的getImg13信息:" + goods.getImg13());
+		test.a("doAdd要添加的getImg14信息:" + goods.getImg14());
+		test.a("doAdd要添加的getImg15信息:" + goods.getImg15());
+		test.a("doAdd要添加的getImg16信息:" + goods.getImg16());
+		test.a("doAdd要添加的HtmlUrl信息:" + goods.getGoodsHtmlUrl());
+		
+		String savePath = ServletActionContext.getServletContext().getRealPath("/") + "attached/";
+		
+		goods = task.Task_SetGoodsImgSize.SetImgSize_Add(goods);
+		test.a("doAdd要添加的getImg1信息:" + goods.getImg1());
+		test.a("doAdd要添加的getImg2信息:" + goods.getImg2());
+		test.a("doAdd要添加的getImg3信息:" + goods.getImg3());
+		test.a("doAdd要添加的getImg4信息:" + goods.getImg4());
+		test.a("doAdd要添加的getImg5信息:" + goods.getImg5());
+		test.a("doAdd要添加的getImg6信息:" + goods.getImg6());
+		test.a("doAdd要添加的getImg7信息:" + goods.getImg7());
+		test.a("doAdd要添加的getImg8信息:" + goods.getImg8());
+		test.a("doAdd要添加的getImg9信息:" + goods.getImg9());
+		test.a("doAdd要添加的getImg10信息:" + goods.getImg10());
+		test.a("doAdd要添加的getImg11信息:" + goods.getImg11());
+		test.a("doAdd要添加的getImg12信息:" + goods.getImg12());
+		test.a("doAdd要添加的getImg13信息:" + goods.getImg13());
+		test.a("doAdd要添加的getImg14信息:" + goods.getImg14());
+		test.a("doAdd要添加的getImg15信息:" + goods.getImg15());
+		test.a("doAdd要添加的getImg16信息:" + goods.getImg16());
+		test.a("doAdd要添加的HtmlUrl信息:" + goods.getGoodsHtmlUrl());
+		
+		Sort sort = sortService.View(sortid);
 		goods.setSort(sort);
+		goods.setCountCart(0);
+		goods.setCountCollect(0);
+		goods.setCommentStar1(0);
+		goods.setCommentStar2(0);
+		goods.setCommentStar3(0);
+		goods.setCommentStar4(0);
+		goods.setCommentStar5(0);
+		goods.setCountOrder(0);
+		
+		//商品关键字
+		if (goods.getGoodsKeyWord() == null || goods.getGoodsKeyWord().equals(""))
+			goods.setGoodsKeyWord(goods.getGoodsName() + "," + goods.getSort().getSortName());
+		else
+			goods.setGoodsKeyWord(goods.getGoodsName() + "," + goods.getSort().getSortName() + ","
+					+ goods.getGoodsKeyWord());
+		
+		//最低包邮金额
+		if (goods.getMoneyLeast() == null || goods.getMoneyLeast().equals(""))
+			goods.setMoneyLeast(msg.goodsmoneyleast);
+		
+		//运费
+		if (goods.getMoneyDeliver() == null || goods.getMoneyDeliver().equals(""))
+			goods.setMoneyDeliver(msg.goodsmoneydeliver);
+		
+		//商品标签
+		if (goods.getGoodsTags().length() > 20) {
+			String tags = goods.getGoodsTags().substring(0, 19);
+			goods.setGoodsTags(tags);
+		}
+		
+		String saveUrl = ServletActionContext.getRequest().getContextPath() + "/attached/";
+		String htmlurl = goodsTool.createHtml(goods);
+		goods.setGoodsHtmlUrl(saveUrl + htmlurl);
+		
 		Goods db_goods = goodsService.Add(goods);
-		System.out.println("doAdd添加后的信息:" + db_goods);
-		this.goods = db_goods;
-		if (db_goods != null) {
-			ActionContext.getContext().put("goods", goods);
-			return (doFind());
-			// return "goodsinfo_view";
-		} else {
+		test.a("doAdd要添加的getImg1信息:" + goods.getImg1());
+		test.a("doAdd要添加的getImg2信息:" + goods.getImg2());
+		test.a("doAdd要添加的getImg3信息:" + goods.getImg3());
+		test.a("doAdd要添加的getImg4信息:" + goods.getImg4());
+		test.a("doAdd要添加的getImg5信息:" + goods.getImg5());
+		test.a("doAdd要添加的getImg6信息:" + goods.getImg6());
+		test.a("doAdd要添加的getImg7信息:" + goods.getImg7());
+		test.a("doAdd要添加的getImg8信息:" + goods.getImg8());
+		test.a("doAdd要添加的getImg9信息:" + goods.getImg9());
+		test.a("doAdd要添加的getImg10信息:" + goods.getImg10());
+		test.a("doAdd要添加的getImg11信息:" + goods.getImg11());
+		test.a("doAdd要添加的getImg12信息:" + goods.getImg12());
+		test.a("doAdd要添加的getImg13信息:" + goods.getImg13());
+		test.a("doAdd要添加的getImg14信息:" + goods.getImg14());
+		test.a("doAdd要添加的getImg15信息:" + goods.getImg15());
+		test.a("doAdd要添加的getImg16信息:" + goods.getImg16());
+		test.a("doAdd要添加的HtmlUrl信息:" + goods.getGoodsHtmlUrl());
+		
+		if (db_goods == null) {
+			goodsTool.DeleteImgHtml_All(goods);
 			ActionContext.getContext().put("Msg", goodsService.getMsg());
 			return "systemerror_view";
 		}
+		
+		ActionContext.getContext().put("goods", db_goods);
+		return "goodsinfo_view";
 	}
-
+	
 	public String doDelete() throws Exception {
 		Goods db_goods = goodsService.View(goods.getGoodsId());
-		System.out.println("daDelete要删除的信息:" + db_goods);
+		Goods goods = db_goods;
 		if (goodsService.Delete(db_goods)) {
+			goodsTool.DeleteImgHtml_All(goods);
 			return (doFind());
-		} else {
+		}
+		else {
 			ActionContext.getContext().put("Msg", goodsService.getMsg());
 			return "systemerror_view";
 		}
 	}
-
+	
 	public String doDeleteAll() throws Exception {
-
+		
 		String[] id = deletelist.split(",");// 用逗号切割
-		System.out.println("用逗号切割");
-		System.out.println(deletelist);
-		System.out.println(currentPage);
-
+		test.a("用逗号切割");
+		test.a(deletelist);
+		test.a(currentPage);
+		
 		for (int i = 0; i < id.length; i++) {
 			int num = Integer.parseInt(id[i]);
 			Goods db_goods = goodsService.View(num);
 			goodsService.Delete(db_goods);
 		}
-
+		
 		return (doFind());
 	}
-
+	
 	public String doView() throws Exception {
-		System.out.println("121212" + goods.getGoodsId());
+		test.a("getGoodsId:" + goods.getGoodsId());
 		Goods db_goods = goodsService.View(goods.getGoodsId());
-		System.out.println("121212" + db_goods.getSort());
-		Sort db_sort = sortService.FindById(db_goods.getSort().getSortId());
-		System.out.println("121212" + db_sort.getSort());
-		this.goods = db_goods;
+		this.goods = db_goods;///////????????????????????!!!!!!
 		if (db_goods != null) {
 			ActionContext ctx = ActionContext.getContext();
 			ctx.put("goods", goods);
-			ctx.put("sort", db_sort);
 			return "goodsinfo_view";
-		} else {
+		}
+		else {
 			ActionContext.getContext().put("Msg", goodsService.getMsg());
 			return "systemerror_view";
 		}
 	}
-
+	
+	public void doFormat() throws Exception {
+		int a = goodsService.Count_Sort_Keyword(0, 0, "");
+		List list10 = goodsService.Find_Sort_Desc(0, "", 0, a);
+		for (int i = 0; i < list10.size(); i++) {
+			Goods good1 = (Goods) list10.get(i);
+			good1 = goodsTool.formatPath(good1);
+			goodsService.Update(good1);
+		}
+	}
+	
 	public String doFind() throws Exception {
-		if (totalRecord == 0)
-			totalRecord = 1;
-		if (totalPage == 0)
-			totalPage = 1;
-		if (firstPage == 0)
-			firstPage = 1;
-		if (currentPage == 0)
+		
+		if (sortid < 10 || sortid > 26)
+			sortid = 0;
+		if (currentPage <= 0)
 			currentPage = 1;
-		if (lastPage == 0)
-			lastPage = 1;
-		if (keyword == null)
+		if (keyword == null || keyword.equals(""))
 			keyword = "";
-
-		System.out.println(keyword);
-		totalRecord = goodsService.GetCount(keyword);
-		System.out.println("59594646" + totalRecord);
-		totalPage = totalRecord / this.RECORD_SIZE + 1;
-		if ((totalRecord % this.RECORD_SIZE == 0) && (totalRecord > this.RECORD_SIZE)) {
+		test.a("rec+sortid:" + sortid);
+		test.a("rec+currentPage:" + currentPage);
+		test.a("rec+keyword:" + keyword);
+		
+		int totalRecord = 0;
+		
+		totalRecord = goodsService.Count_Sort_Keyword(0, sortid, keyword);
+		
+		int totalPage = totalRecord / msg.RECORD_SIZE + 1;
+		if ((totalRecord % msg.RECORD_SIZE == 0) && (totalRecord > msg.RECORD_SIZE)) {
 			totalPage--;
 		}
-		if (totalPage < PAGE_SIZE) {
+		currentPage = Math.min(currentPage, totalPage);
+		
+		int firstPage = 1;
+		int lastPage = 1;
+		if (totalPage < msg.PAGE_SIZE) {
 			firstPage = 1;
 			lastPage = totalPage;
-		} else {
-			firstPage = (currentPage / PAGE_SIZE) * PAGE_SIZE + 1;
-			lastPage = firstPage + PAGE_SIZE - 1;
+		}
+		else {
+			firstPage = (currentPage / msg.PAGE_SIZE) * msg.PAGE_SIZE + 1;
+			lastPage = firstPage + msg.PAGE_SIZE - 1;
 			if (lastPage > totalPage) {
 				lastPage = totalPage;
 			}
 		}
-		if (currentPage > totalPage) {
-			System.out.println("currentPage>totalPage");
-		} else {
-			System.out.println("当前页码：" + currentPage + "页码列表：");
-			for (int i = firstPage; i <= lastPage; i++) {
-				System.out.print(i);
-			}
+		int fromIndex = (currentPage - 1) * msg.RECORD_SIZE; // 选择从第几条开始
+		
+		test.a("当前页码：totalPage" + totalPage);
+		test.a("当前页码：totalRecord" + totalRecord);
+		test.a("当前页码：currentPage" + currentPage);
+		test.a("当前页码：fromIndex" + fromIndex);
+		test.a("当前页码：firstPage" + firstPage);
+		test.a("当前页码：lastPage" + lastPage);
+		
+		List list = new ArrayList();
+		if (sortid == 0) {
+			list = goodsService.Find_Desc(keyword, fromIndex, msg.RECORD_SIZE);// 可优化
 		}
-		int fromIndex = (currentPage - 1) * this.RECORD_SIZE; // 选择从第几条开始
-		int toIndex = Math.min(fromIndex + this.RECORD_SIZE, totalRecord);// 调用Math.min函数取目的数
-
-		System.out.println("当前页码：totalPage" + totalPage);
-		System.out.println("当前页码：totalRecord" + totalRecord);
-		System.out.println("当前页码：currentPage" + currentPage);
-		System.out.println("当前页码：fromIndex" + fromIndex);
-		System.out.println("当前页码：toIndex" + toIndex);
-		System.out.println("当前页码：firstPage" + firstPage);
-		System.out.println("当前页码：lastPage" + lastPage);
-
-		List<?> list = goodsService.Find(keyword, fromIndex, toIndex - fromIndex);// 可优化
-
+		else {
+			list = goodsService.Find_Sort_Desc(sortid, keyword, fromIndex, msg.RECORD_SIZE);
+		}
+		
 		ActionContext ctx = ActionContext.getContext();
 		ctx.put("list", list);
 		ctx.put("totalRecord", totalRecord);
@@ -232,261 +298,241 @@ public class GoodsAction extends ActionSupport {
 		ctx.put("firstPage", firstPage);
 		ctx.put("currentPage", currentPage);
 		ctx.put("lastPage", lastPage);
-		ctx.put("PAGE_SIZE", PAGE_SIZE);
+		ctx.put("PAGE_SIZE", msg.PAGE_SIZE);
 		ctx.put("keyword", keyword);
+		
+		if (sortid > 0) {
+			ctx.put("sortid", sortid);
+			return "goodslistbysort_view";
+		}
 		return "goodslist_view";
 	}
-
-	public String doFindBySortId() throws Exception {
-
-		if (totalRecord == 0)
-			totalRecord = 1;
-		if (totalPage == 0)
-			totalPage = 1;
-		if (firstPage == 0)
-			firstPage = 1;
-		if (currentPage == 0)
-			currentPage = 1;
-		if (lastPage == 0)
-			lastPage = 1;
-		if (keyword == null)
-			keyword = "";
-
-		totalRecord = goodsService.GetCountBySortId(sortid, keyword);
-		totalPage = totalRecord / this.RECORD_SIZE + 1;
-		if ((totalRecord % this.RECORD_SIZE == 0) && (totalRecord > this.RECORD_SIZE)) {
-			totalPage--;
-		}
-		if (totalPage < PAGE_SIZE) {
-			firstPage = 1;
-			lastPage = totalPage;
-		} else {
-			firstPage = (currentPage / PAGE_SIZE) * PAGE_SIZE + 1;
-			lastPage = firstPage + PAGE_SIZE - 1;
-			if (lastPage > totalPage) {
-				lastPage = totalPage;
-			}
-		}
-		if (currentPage > totalPage) {
-			System.out.println("currentPage>totalPage");
-		} else {
-			System.out.println("当前页码：" + currentPage + "页码列表：");
-			for (int i = firstPage; i <= lastPage; i++) {
-				System.out.print(i);
-			}
-		}
-		int fromIndex = (currentPage - 1) * this.RECORD_SIZE; // 选择从第几条开始
-		int toIndex = Math.min(fromIndex + this.RECORD_SIZE, totalRecord);// 调用Math.min函数取目的数
-		List list = goodsService.FindBySortId(sortid, fromIndex, toIndex - fromIndex);
-
-		ActionContext ctx = ActionContext.getContext();
-		ctx.put("list", list);
-		ctx.put("totalRecord", totalRecord);
-		ctx.put("totalPage", totalPage);
-		ctx.put("firstPage", firstPage);
-		ctx.put("currentPage", currentPage);
-		ctx.put("lastPage", lastPage);
-		ctx.put("PAGE_SIZE", PAGE_SIZE);
-		ctx.put("keyword", keyword);
-		return "goodslist_view";
-	}
-
+	
 	public String doEdit() throws Exception {
-		List<?> list = sortService.Find();
+		List list = sortService.Find_All();
 		List parentlist = new ArrayList();
 		List sortlist = new ArrayList();
 		for (int i = 0; i < list.size(); i++) {
 			Sort sort = (Sort) list.get(i);
 			if (sort.getSortClass() == 1) {
 				parentlist.add(sort);
+				test.a(sort);
 			}
 		}
 		for (int i = 0; i < parentlist.size(); i++) {
 			Sort sort = (Sort) parentlist.get(i);
-			List childlist = sortService.FindBySortId(sort.getSortId());
+			List childlist = sortService.Find_SortId(sort.getSortId());
 			Set<Sort> set = new HashSet<Sort>(childlist);
 			sort.setSorts(set);
 			sortlist.add(sort);
+			test.a(sort);
 		}
-
-		List companylist = companyService.Find(keyword);
-
-		System.out.println("doEdit要修改信息的ID：" + goods.getGoodsId());
+		
+		List companylist = companyService.Find_All("");
+		
+		test.a("doEdit要修改信息的ID：" + goods.getGoodsId());
 		Goods db_goods = goodsService.View(goods.getGoodsId());
 		this.goods = db_goods;
-		System.out.println("doEdit要修改信息：" + goods);
-
-		System.out.println("5656" + goods.getSort());
-		Sort db_sort = sortService.FindById(db_goods.getSort().getSortId());
-		System.out.println("565" + db_sort.getSort());
-
 		if (db_goods != null) {
 			ActionContext ctx = ActionContext.getContext();
 			ctx.put("sortlist", sortlist);
 			ctx.put("companylist", companylist);
 			ctx.put("goods", goods);
-			ctx.put("sort", db_sort);
-
+			
 			return "goodsedit_view";
-		} else {
+		}
+		else {
 			ActionContext.getContext().put("Msg", goodsService.getMsg());
 			return "systemerror_view";
 		}
 	}
-
+	
 	public String doUpdate() throws Exception {
-		System.out.println("doUpdate要修改的信息:" + goods);
-		System.out.println("doUpdate要修改的信息:" + sortid);
-
-		Sort sort = sortService.FindById(sortid);
+		Goods old_goods = goodsService.View(goods.getGoodsId());
+		
+		test.a("doUpdate要添加的sortid信息:" + sortid);
+		test.a("doUpdate要添加的producerid信息:" + producerid);
+		test.a("doUpdate要添加的sellerid信息:" + sellerid);
+		test.a("doUpdate要添加的getImg1信息:" + goods.getImg1());
+		test.a("doUpdate要添加的getImg2信息:" + goods.getImg2());
+		test.a("doUpdate要添加的getImg3信息:" + goods.getImg3());
+		test.a("doUpdate要添加的getImg4信息:" + goods.getImg4());
+		test.a("doUpdate要添加的getImg5信息:" + goods.getImg5());
+		test.a("doUpdate要添加的getImg6信息:" + goods.getImg6());
+		test.a("doUpdate要添加的getImg7信息:" + goods.getImg7());
+		test.a("doUpdate要添加的getImg8信息:" + goods.getImg8());
+		test.a("doUpdate要添加的getImg9信息:" + goods.getImg9());
+		test.a("doUpdate要添加的getImg10信息:" + goods.getImg10());
+		test.a("doUpdate要添加的getImg11信息:" + goods.getImg11());
+		test.a("doUpdate要添加的getImg12信息:" + goods.getImg12());
+		test.a("doUpdate要添加的getImg13信息:" + goods.getImg13());
+		test.a("doUpdate要添加的getImg14信息:" + goods.getImg14());
+		test.a("doUpdate要添加的getImg15信息:" + goods.getImg15());
+		test.a("doUpdate要添加的getImg16信息:" + goods.getImg16());
+		test.a("doUpdate要添加的HtmlUrl信息:" + goods.getGoodsHtmlUrl());
+		
+		goods = task.Task_SetGoodsImgSize.SetImgSize_Update(old_goods, goods);
+		test.a("doUpdate要添加的getImg1信息:" + goods.getImg1());
+		test.a("doUpdate要添加的getImg2信息:" + goods.getImg2());
+		test.a("doUpdate要添加的getImg3信息:" + goods.getImg3());
+		test.a("doUpdate要添加的getImg4信息:" + goods.getImg4());
+		test.a("doUpdate要添加的getImg5信息:" + goods.getImg5());
+		test.a("doUpdate要添加的getImg6信息:" + goods.getImg6());
+		test.a("doUpdate要添加的getImg7信息:" + goods.getImg7());
+		test.a("doUpdate要添加的getImg8信息:" + goods.getImg8());
+		test.a("doUpdate要添加的getImg9信息:" + goods.getImg9());
+		test.a("doUpdate要添加的getImg10信息:" + goods.getImg10());
+		test.a("doUpdate要添加的getImg11信息:" + goods.getImg11());
+		test.a("doUpdate要添加的getImg12信息:" + goods.getImg12());
+		test.a("doUpdate要添加的getImg13信息:" + goods.getImg13());
+		test.a("doUpdate要添加的getImg14信息:" + goods.getImg14());
+		test.a("doUpdate要添加的getImg15信息:" + goods.getImg15());
+		test.a("doUpdate要添加的getImg16信息:" + goods.getImg16());
+		test.a("doUpdate要添加的HtmlUrl信息:" + goods.getGoodsHtmlUrl());
+		
+		Sort sort = sortService.View(sortid);
 		goods.setSort(sort);
-
+		
+		//商品关键字
+		if (goods.getGoodsKeyWord() == null || goods.getGoodsKeyWord().equals(""))
+			goods.setGoodsKeyWord(goods.getGoodsName() + "," + goods.getSort().getSortName());
+		
+		//最低包邮金额
+		if (goods.getMoneyLeast() == null || goods.getMoneyLeast().equals(""))
+			goods.setMoneyLeast(msg.goodsmoneyleast);
+		
+		//运费
+		if (goods.getMoneyDeliver() == null || goods.getMoneyDeliver().equals(""))
+			goods.setMoneyDeliver(msg.goodsmoneydeliver);
+		
+		//商品标签
+		if (goods.getGoodsTags().length() > 20) {
+			String tags = goods.getGoodsTags().substring(0, 19);
+			goods.setGoodsTags(tags);
+		}
+		
+		String saveUrl = ServletActionContext.getRequest().getContextPath() + "/attached/";
+		String htmlurl = goodsTool.createHtml(goods);
+		goods.setGoodsHtmlUrl(saveUrl + htmlurl);
+		
 		Goods db_goods = goodsService.Update(goods);
-
-		System.out.println("121212" + db_goods.getSort());
-		Sort db_sort = sortService.FindById(db_goods.getSort().getSortId());
-		System.out.println("121212" + db_sort.getSort());
-
-		this.goods = db_goods;
-		if (db_goods != null) {
-
-			ActionContext ctx = ActionContext.getContext();
-			ctx.put("goods", goods);
-			ctx.put("sort", db_sort);
-			System.out.println("doUpdate修改后信息:" + goods);
-			return "goodsinfo_view";
-		} else {
+		test.a("doUpdate要添加的getImg1信息:" + goods.getImg1());
+		test.a("doUpdate要添加的getImg2信息:" + goods.getImg2());
+		test.a("doUpdate要添加的getImg3信息:" + goods.getImg3());
+		test.a("doUpdate要添加的getImg4信息:" + goods.getImg4());
+		test.a("doUpdate要添加的getImg5信息:" + goods.getImg5());
+		test.a("doUpdate要添加的getImg6信息:" + goods.getImg6());
+		test.a("doUpdate要添加的getImg7信息:" + goods.getImg7());
+		test.a("doUpdate要添加的getImg8信息:" + goods.getImg8());
+		test.a("doUpdate要添加的getImg9信息:" + goods.getImg9());
+		test.a("doUpdate要添加的getImg10信息:" + goods.getImg10());
+		test.a("doUpdate要添加的getImg11信息:" + goods.getImg11());
+		test.a("doUpdate要添加的getImg12信息:" + goods.getImg12());
+		test.a("doUpdate要添加的getImg13信息:" + goods.getImg13());
+		test.a("doUpdate要添加的getImg14信息:" + goods.getImg14());
+		test.a("doUpdate要添加的getImg15信息:" + goods.getImg15());
+		test.a("doUpdate要添加的getImg16信息:" + goods.getImg16());
+		test.a("doUpdate要添加的HtmlUrl信息:" + goods.getGoodsHtmlUrl());
+		
+		if (db_goods == null) {
+			goodsTool.DeleteImgHtml_All(goods);
 			ActionContext.getContext().put("Msg", goodsService.getMsg());
 			return "systemerror_view";
 		}
+		
+		goodsTool.DeleteImgHtml_Some(old_goods, db_goods);
+		
+		ActionContext ctx = ActionContext.getContext();
+		ctx.put("goods", db_goods);
+		return "goodsinfo_view";
 	}
-
+	
 	public GoodsService getGoodsService() {
 		return goodsService;
 	}
-
+	
 	public void setGoodsService(GoodsService goodsService) {
 		this.goodsService = goodsService;
 	}
-
+	
 	public Goods getGoods() {
 		return goods;
 	}
-
+	
 	public void setGoods(Goods goods) {
 		this.goods = goods;
 	}
-
+	
 	public String getKeyword() {
 		return keyword;
 	}
-
+	
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
-
-	public String getGoodsStartDate() {
-		return goodsStartDate;
-	}
-
-	public void setGoodsStartDate(String goodsStartDate) {
-		this.goodsStartDate = goodsStartDate;
-	}
-
-	public int getFirstPage() {
-		return firstPage;
-	}
-
-	public void setFirstPage(int firstPage) {
-		this.firstPage = firstPage;
-	}
-
-	public int getLastPage() {
-		return lastPage;
-	}
-
-	public void setLastPage(int lastPage) {
-		this.lastPage = lastPage;
-	}
-
+	
 	public int getCurrentPage() {
 		return currentPage;
 	}
-
+	
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
 	}
-
-	public int getTotalPage() {
-		return totalPage;
-	}
-
-	public void setTotalPage(int totalPage) {
-		this.totalPage = totalPage;
-	}
-
-	public int getTotalRecord() {
-		return totalRecord;
-	}
-
-	public void setTotalRecord(int totalRecord) {
-		this.totalRecord = totalRecord;
-	}
-
-	public int getRECORD_SIZE() {
-		return RECORD_SIZE;
-	}
-
-	public int getPAGE_SIZE() {
-		return PAGE_SIZE;
-	}
-
+	
 	public int getSortid() {
 		return sortid;
 	}
-
+	
 	public void setSortid(int sortid) {
 		this.sortid = sortid;
 	}
-
+	
 	public CompanyService getCompanyService() {
 		return companyService;
 	}
-
+	
 	public void setCompanyService(CompanyService companyService) {
 		this.companyService = companyService;
 	}
-
+	
 	public SortService getSortService() {
 		return sortService;
 	}
-
+	
 	public void setSortService(SortService sortService) {
 		this.sortService = sortService;
 	}
-
+	
 	public int getProducerid() {
 		return producerid;
 	}
-
+	
 	public void setProducerid(int producerid) {
 		this.producerid = producerid;
 	}
-
+	
 	public int getSellerid() {
 		return sellerid;
 	}
-
+	
 	public void setSellerid(int sellerid) {
 		this.sellerid = sellerid;
 	}
-
+	
 	public String getDeletelist() {
 		return deletelist;
 	}
-
+	
 	public void setDeletelist(String deletelist) {
 		this.deletelist = deletelist;
 	}
-
+	
+	public String getOldhtmlurl() {
+		return oldhtmlurl;
+	}
+	
+	public void setOldhtmlurl(String oldhtmlurl) {
+		this.oldhtmlurl = oldhtmlurl;
+	}
+	
 }

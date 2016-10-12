@@ -1,5 +1,7 @@
 package bean;
 
+import java.sql.Timestamp;
+
 /**
  * Collect entity. @author MyEclipse Persistence Tools
  */
@@ -11,7 +13,7 @@ public class Collect implements java.io.Serializable {
 	private Integer collectId;
 	private Goods goods;
 	private Customer customer;
-	private String collectDate;
+	private Timestamp collectDate;
 
 	// Constructors
 
@@ -20,7 +22,7 @@ public class Collect implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Collect(Goods goods, Customer customer, String collectDate) {
+	public Collect(Goods goods, Customer customer, Timestamp collectDate) {
 		this.goods = goods;
 		this.customer = customer;
 		this.collectDate = collectDate;
@@ -52,12 +54,17 @@ public class Collect implements java.io.Serializable {
 		this.customer = customer;
 	}
 
-	public String getCollectDate() {
+	public Timestamp getCollectDate() {
 		return this.collectDate;
 	}
 
-	public void setCollectDate(String collectDate) {
+	public void setCollectDate(Timestamp collectDate) {
 		this.collectDate = collectDate;
+	}
+
+	@Override
+	public String toString() {
+		return "Collect [collectId=" + collectId + ", collectDate=" + collectDate + "]";
 	}
 
 }

@@ -5,15 +5,20 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path
+			+ "/";
 	Admin user = (Admin) session.getAttribute("user");
 	if (user == null) {
-		response.getWriter().println("<script>top.location.href='" + basePath + "admin/admin_doLogin.action';</script>");
+		response.getWriter().println(
+				"<script>top.location.href='" + basePath + "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>帮助首页</title>
@@ -24,18 +29,26 @@
 <body>
 	<form action="<%=basePath%>help/help_doFind.action" name="helplistForm" id="helpForm" method="post">
 		<div class="place">
-			<span>当前位置：</span>
+			<span>位置：</span>
 			<ul class="placeul">
-				<li><a href="<%=basePath%>mainindex.jsp">首页</a></li>
-				<li><a href="<%=basePath%>help.jsp">帮助</a></li>
+				<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+				<li1><a  style="color:blue;" href="<%=basePath%>help.jsp">帮助查找</a></li1>
+				<li1><a href="<%=basePath%>help/help_doFind.action">帮助列表</a></li1>
+				<li1><a href="<%=basePath%>help.jsp">帮助添加</a></li1>
+				<li1><a onClick="history.back(-1)">返回</a></li1>
 			</ul>
 		</div>
 		<div class="mainindex">
+
 			<div class="welinfo">
-				<span><img src="images/sun.png" alt="天气" /></span>
-				<b>Admin您好，欢迎使用</b>
-				<a href="">信息管理系统</a>
+				<span><img src="<%=basePath%>images/time.png" alt="时间" /></span>
+				<b>
+					<a href="<%=basePath%>admin/admin_doView.action?admin.adminId=<%=user.getAdminId()%>"><%=user.getAdminName()%></a>
+					, 欢迎使用生鲜农产品管理系统
+				</b>
 			</div>
+			<div class="ibox"></div>
+
 			<ul class="seachform">
 				<li><label>帮助查询</label> <input type="text" name="keyword" id="keyword" value="" placeholder="请输入关键字" class="scinput" /></li>
 				<li><label>&nbsp;</label> <input type="submit" name="button" class="scbtn" value="查询" /></li>

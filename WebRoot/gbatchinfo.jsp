@@ -9,16 +9,19 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+	String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
 	Object user = session.getAttribute("user");
 	GBatch gbatch = (GBatch) request.getAttribute("gbatch");
 	if (user == null) {
-		response.getWriter().println( "<script>top.location.href='" + basePath + "admin/admin_doLogin.action';</script>");
+		response.getWriter().println("<script>top.location.href='" + basePath + "';</script>");
 	}
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>查看商品批次详情</title>
@@ -49,16 +52,15 @@
 			var editor2 = K.create('textarea[name="gbatch.sellerReceiveContent"]', {
 				cssPath : '<%=basePath%>editor/plugins/code/prettify.css',
 				uploadJson : '<%=basePath%>editor/jsp/upload_json.jsp',
-				fileManagerJson : '<%=basePath%>
-	editor/jsp/file_manager_json.jsp',
-									allowFileManager : true,
-									afterCreate : function() {
-										var self = this;
-									}
-								});
-
-				prettyPrint();
+				fileManagerJson : '<%=basePath%>editor/jsp/file_manager_json.jsp',
+				allowFileManager : true,
+				afterCreate : function() {
+					var self = this;
+				}
 			});
+
+			prettyPrint();
+});
 </script>
 
 
@@ -66,40 +68,38 @@
 </head>
 
 <body>
-	<!-- 	<div class="place"> -->
-	<!-- 		<span>位置：</span> -->
-	<!-- 		<ul class="placeul"> -->
-	<!-- 			<li><a href="<%=basePath%>mainindex.jsp">首页</a></li> -->
-	<!-- 			<li><a href="#" target="rightFrame">商品批次查看</a></li> -->
-	<!-- 		</ul> -->
-	<!-- 	</div> -->
+	<div class="place">
+		<span>位置:</span>
+		<ul class="placeul">
+		<li1><a href="<%=basePath%>mainindex.jsp">首页</a></li1>
+			<li1><a href="<%=basePath%>sort/sort_doFind.action">商品分类</a></li1>
+			<li1><a href="<%=basePath%>goods/goods_doFind.action">商品列表</a></li1>
+			<li1><a href="<%=basePath%>goods/goods_doView.action?goods.goodsId=<%=gbatch.getGoods().getGoodsId()%>">商品详情</a></li1>
+			<li1><a href="<%=basePath%>gbatch/gbatch_doFind.action?goodsid=<%=gbatch.getGoods().getGoodsId()%>">批次列表</a></li1>
+			<li1><a href="<%=basePath%>oinfo/oinfo_doFind.action?goodsid=<%=gbatch.getGoods().getGoodsId()%>">商品订单</a></li1>
+			<li1><a href="<%=basePath%>oinfo/oinfo_doFind.action?batchid=<%=gbatch.getBatchId()%>">批次订单</a></li1>
+			<li1><a href="<%=basePath%>gbatch/gbatch_beforedoAdd.action?goodsid=<%=gbatch.getGoods().getGoodsId()%>">添加批次</a></li1>
+			<li1><a  style="color:blue;" href="<%=basePath%>gbatch/gbatch_doView.action?gbatch.batchId=<%=gbatch.getBatchId()%>">批次详情</a></li1>
+			<li1><a onClick="history.back(-1)">返回</a></li1>
+				</ul>
+	</div>
 	<div class="formbody">
 
 		<div id="usual1" name="usual1" class="usual">
 
-			<div class="itab">
-				<ul>
-					<li><a href="<%=basePath%>goods/goods_doView.action?goods.goodsId=<%=gbatch.getGoods().getGoodsId()%>">商品查看</a></li>
-					<li><a href="<%=basePath%>gbatch/gbatch_doFindByGoodsId.action?goodsid=<%=gbatch.getGoods().getGoodsId()%>">批次列表</a></li>
-					<li><a href="<%=basePath%>oinfo/oinfo_doFindByGoodsId.action?goodsid=<%=gbatch.getGoods().getGoodsId()%>">订单列表</a></li>
-					<li><a href="<%=basePath%>comment/comment_doFindByGoodsId.action?goodsid=<%=gbatch.getGoods().getGoodsId()%>">评论列表</a></li>
-					<li><a href="<%=basePath%>comment/comment_doFindByGoodsId.action?goodsid=<%=gbatch.getGoods().getGoodsId()%>">评论列表</a></li>
-					<li><a href="#tab5" class="selected">批次详情</a></li>
-					<li><a href="<%=basePath%>gbatch/gbatch_beforedoAdd.action?goodsid=<%=gbatch.getGoods().getGoodsId()%>">添加批次</a></li>
-				</ul>
-			</div>
 
 			<div id="tab5" name="tab5" class="tabson">
 
 				<ul class="forminfo">
 					<input name="goodsid" id="goodsid" type="hidden" value="<%=gbatch.getGoods().getGoodsId()%>" />
-					<li><label>数量<b>*</b></label><input type="text" value="<%=gbatch.getBatchNumTotal()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
-					<li><label>库存<b>*</b></label><input type="text" value="<%=gbatch.getBatchNumStock()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
-					<li><label>保质期<b>*</b></label><input type="text" value="<%=gbatch.getBatchDateKeep()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
-					<li><label>生产时间<b>*</b></label><input type="text" value="<%=gbatch.getProducerSendDate()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
-					<li><label>入货时间<b>*</b></label><input type="text" value="<%=gbatch.getSellerReceiveDate()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
+					<li><label>数量<b>*</b></label><input type="text" value="<%=gbatch.getNumTotal()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
+					<li><label>库存<b>*</b></label><input type="text" value="<%=gbatch.getNumStock()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
+					<li><label>保质开始<b>*</b></label><input type="text" value="<%=gbatch.getDateKeep1()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
+					<li><label>保质结束<b>*</b></label><input type="text" value="<%=gbatch.getDateKeep2()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
 					<li><label>生产商<b>*</b></label><input type="text" value="<%=gbatch.getCompanyByProducerId().getCompanyName()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
+					<li><label>发货时间<b>*</b></label><input type="text" value="<%=gbatch.getDateSend()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
 					<li><label>销售商<b>*</b></label><input type="text" value="<%=gbatch.getCompanyBySellerId().getCompanyName()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
+					<li><label>收货时间<b>*</b></label><input type="text" value="<%=gbatch.getDateRec()%>" class="dfinput1" readonly="true" style="width:320px;" /></li>
 
 					<li><label>生产详情<b>*</b></label> <textarea name="gbatch.producerSendContent" readonly="true" style="width:700px;height:250px;visibility:hidden;"><%=gbatch.getProducerSendContent()%></textarea></li>
 					<li><label>其他详情<b>*</b></label> <textarea name="gbatch.sellerReceiveContent" readonly="true" style="width:700px;height:250px;visibility:hidden;"><%=gbatch.getSellerReceiveContent()%></textarea></li>

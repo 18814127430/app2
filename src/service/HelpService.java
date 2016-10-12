@@ -11,57 +11,59 @@ public class HelpService {
 	private HelpDAO helpDao;
 
 	public Help Add(Help help) {
-		List<?> list = helpDao.findByHelpTitle(help.getHelpTitle());
+		List list = helpDao.findByHelpTitle(help.getHelpTitle());
 		if (list.size() > 0) {
-			this.Msg = msg.add_fail_name;
-			System.out.println(this.Msg);
+			this.Msg = msg.help_helpexist;
 			return null;
 		}
 		Help result = helpDao.merge(help);
-		this.Msg = " 操作成功 ";
+		this.Msg = msg.help_success;
 		return result;
 	}
 
 	public boolean Delete(Help help) throws Exception {
 		Help db_help = helpDao.findById(help.getHelpId());
 		if (db_help == null) {
-			this.Msg = msg.delete_fail_id;
+			this.Msg = msg.help_helpnull;
 			System.out.println(this.Msg);
 			return false;
 		}
-		helpDao.delete(help);
+		helpDao.delete(db_help);
+		this.Msg = msg.help_success;
 		return true;
 	}
 
 	public Help View(int helpID) throws Exception {
 		Help db_help = helpDao.findById(helpID);
 		if (db_help == null) {
-			this.Msg = msg.find_fail_id;
-			System.out.println(this.Msg);
+			this.Msg = msg.help_helpnull;
 			return null;
 		}
+		this.Msg = msg.help_success;
 		return db_help;
 	}
 
-	public int GetCount(String keyword) throws Exception {
-		return helpDao.getCount(keyword);
+	public int Count_Keyword(String keyword) throws Exception {
+		int count = helpDao.getCount(keyword);
+		this.Msg = msg.help_success;
+		return count;
 	}
 
-	public List Find(String keyword, int start, int length) throws Exception {
+	public List Find_Keyword(String keyword, int start, int length) throws Exception {
 		List list = helpDao.findAll(keyword, start, length);
-		System.out.println("5859695959595294:" + list.size());
+		this.Msg = msg.help_success;
 		return list;
 	}
 
 	public Help Update(Help help) throws Exception {
 		Help db_help = helpDao.findById(help.getHelpId());
 		if (db_help == null) {
-			this.Msg = msg.update_fail_id;
-			System.out.println(this.Msg);
+			this.Msg = msg.help_helpnull;
 			return null;
 		}
-		Help result = helpDao.merge(help);
-		return result;
+		db_help = helpDao.merge(help);
+		this.Msg = msg.help_success;
+		return db_help;
 	}
 
 	public String getMsg() {
